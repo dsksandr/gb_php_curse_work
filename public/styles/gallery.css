@@ -1,0 +1,13 @@
+.big-picture {
+    max-width: 60%;
+    height: auto;
+}
+
+.control,
+.big-picture {
+    align-self: center;
+}
+
+.control {
+    margin-top: 30px;
+}

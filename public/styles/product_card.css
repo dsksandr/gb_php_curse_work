@@ -1,0 +1,27 @@
+.product-card {
+    font-family: 'Montserrat Regular', sans-serif;
+}
+
+.product-card__inner {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.product-card__text-wrapper,
+.product-card__btn-wrapper {
+    margin-top: 20px;
+}
+
+.product-card__title {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.product-card__price-wrapper {
+    margin-top: 12px;
+}
+
+.product-card__btn {
+    margin: 0 4px 8px 0;
+}
+

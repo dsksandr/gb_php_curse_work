@@ -1,0 +1,37 @@
+.form,
+.label {
+    display: flex;
+    flex-flow: column nowrap;
+}
+.form {
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 500;
+    width: 100%;
+}
+.label {
+    margin-top: 10px;
+    width: 35%;
+}
+.buttons-block {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    margin-top: 30px;
+    width: 35%;
+}
+.equally {
+    margin-top: 20px;
+    font-weight: 600;
+}
+.submit {
+    padding: 5px 3px;
+    font-size: 14px;
+    border: 1px solid gray;
+    background: linear-gradient(180deg, darkgray, gray);
+    cursor: default;
+}
+.submit:hover {
+    border-color: #000;
+}

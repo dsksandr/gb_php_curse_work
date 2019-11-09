@@ -1,0 +1,24 @@
+.product__price-wrapper {
+    display: flex;
+}
+
+.product__price-currency {
+    margin-left: 4px;
+}
+
+.product__img-wrapper {
+    position: relative;
+    padding-top: 84%;
+    width: 100%;
+}
+
+.product__img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
