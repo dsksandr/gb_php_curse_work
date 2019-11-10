@@ -18,7 +18,6 @@ class ProductModel extends DBModel
         'image' => false
     ];
 
-
     /**
      * Product constructor.
      * @param $name
@@ -34,11 +33,8 @@ class ProductModel extends DBModel
         $this->image = $image;
     }
 
-
     public static function getTableName()
     {
         return "products";
     }
-
-
 }

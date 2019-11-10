@@ -10,7 +10,7 @@ class CartModel extends DBModel
     public $goods_id;
 
     /**
-     * Basket constructor.
+     * Cart constructor.
      * @param $session_id
      * @param $goods_id
      */
@@ -20,10 +20,8 @@ class CartModel extends DBModel
         $this->goods_id = $goods_id;
     }
 
-
     public static function getTableName()
     {
-        return "basket";
+        return "cart";
     }
-
 }

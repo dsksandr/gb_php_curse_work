@@ -48,7 +48,7 @@ abstract class DBModel extends Model
     public function delete()
     {
         $tableName = static::getTableName();
-        $sql = "DELETE FROM {$tableName} WHERE id = :id";
+        $sql = "DELETE FROM `{$tableName}` WHERE `id` = :id";
         return DB::getInstance()->execute($sql, ["id" => $this->id]);
     }
 
@@ -68,7 +68,7 @@ abstract class DBModel extends Model
     public static function getOne($id)
     {
         $tableName = static::getTableName();
-        $sql = "SELECT * FROM `{$tableName}` WHERE id = :id";
+        $sql = "SELECT * FROM `{$tableName}` WHERE `id` = :id";
         return DB::getInstance()->queryObject($sql, ['id' => $id], static::class);
     }
 

@@ -2,6 +2,9 @@
 
 namespace app\traits;
 
+
+use app\core\DB;
+
 trait TSingleton
 {
     private static $instance = null;
@@ -18,6 +21,9 @@ trait TSingleton
     {
     }
 
+    /**
+     * @return DB
+     */
     public static function getInstance()
     {
         if (is_null(static::$instance)) {

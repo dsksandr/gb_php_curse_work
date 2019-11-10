@@ -16,4 +16,8 @@ class AuthController extends Controller
 
     }
 
+    function createParams($ctrlParams = [])
+    {
+        // TODO: Implement createParams() method.
+    }
 }

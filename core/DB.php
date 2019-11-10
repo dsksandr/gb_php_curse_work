@@ -4,6 +4,7 @@ namespace app\core;
 
 
 use app\traits\TSingleton;
+use PDO;
 
 class DB
 {
@@ -17,23 +18,23 @@ class DB
         'database' => 'shop',
         'charset' => 'utf8'
     ];
-
+    /**
+     * @var $connection PDO
+     */
     private $connection = null;
-
 
     private function getConnection()
     {
         if (is_null($this->connection)) {
-            $this->connection = new \PDO($this->prepareDSNString(),
+            $this->connection = new PDO($this->prepareDSNString(),
                 $this->config['login'],
                 $this->config['password']
             );
-            $this->connection->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+            $this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         }
         return $this->connection;
     }
 
-//"SELECT * FROM goods WHERE id = :id;", ["id" => 1]
     private function query($sql, $params)
     {
         $pdoStatement = $this->getConnection()->prepare($sql);
@@ -50,7 +51,7 @@ class DB
     public function queryObject($sql, $params, $class)
     {
         $pdoStatement = $this->query($sql, $params);
-        $pdoStatement->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $class);
+        $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $class);
         return $pdoStatement->fetch();
     }
 
@@ -59,7 +60,6 @@ class DB
         $this->query($sql, $params);
         return true;
     }
-
 
     private function prepareDSNString()
     {
@@ -70,7 +70,6 @@ class DB
             $this->config['charset']
         );
     }
-
 
     public function queryOne($sql, $params = [])
     {
@@ -86,5 +85,4 @@ class DB
     {
         return "DB";
     }
-
 }
