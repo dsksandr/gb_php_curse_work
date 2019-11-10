@@ -3,11 +3,14 @@
 
 namespace app\controllers;
 
-class CartController
+
+class CartController extends Controller
 {
+
     public function actionIndex()
     {
         //$basket = Basket::getBasket(session_id());
-        echo $this->render('basket');
+        echo $this->render('cart');
     }
+
 }

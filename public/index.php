@@ -1,27 +1,44 @@
 <?php
 
-use app\core\Db;
-use app\models\{Cart, Users};
-use app\models\product\{Goods, GoodsDigital, GoodsWeight, Renderer};
+use app\core\{Autoload};
+use app\core\Render;
+use app\models\{ProductModel};
 
-define('DS', DIRECTORY_SEPARATOR);
-include dirname(__DIR__) . DS . 'core' . DS . "Autoload.php";
+include realpath("../config/config.php");
+include realpath("../core/Autoload.php");
 
 spl_autoload_register([new Autoload(), 'loadClass']);
 
-$goods = new Goods(new Db());
-$goodsWeight = new GoodsWeight(new Db(), 3);
-$goodsDigital = new GoodsDigital(new Db());
-$users = new Users(new Db());
-$cart = new Cart(new Db());
+$url = explode('/', $_SERVER['REQUEST_URI']);
 
-function foo(Renderer $product)
-{
-    return $product->showInfo();
+$controllerName = empty($url[1]) ? 'product' : $url[1];
+$actionName = $url[2];
+
+$controllerClass = CTRL_NAMESPACE . ucfirst($controllerName) . "Controller";
+
+if (class_exists($controllerClass)) {
+    $controller = new $controllerClass(new Render());
+    $controller->runAction($actionName);
+} else {
+    echo "404 controller";
 }
 
-echo foo($goods) . '<br>';
-echo foo($goodsWeight) . '<br>';
-echo foo($goodsDigital) . '<br>';
+/** @var ProductModel $product */
 
-//echo $product->getOne(1);
+//$product = new Product("Пицца","Описание", 125, "1.jpg");
+
+//$product = new Product();
+//
+
+//$product->delete();
+
+/*
+$product = Product::getOne(5);
+$product->name = "Чай";
+$product->save();
+//$product->getWere('session_id', session_id());
+*/
+
+
+
+

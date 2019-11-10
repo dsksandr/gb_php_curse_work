@@ -2,7 +2,8 @@
 
 namespace app\models;
 
-class Product extends DbModel
+
+class ProductModel extends DBModel
 {
     protected $id;
     protected $name;
@@ -16,7 +17,6 @@ class Product extends DbModel
         'price' => false,
         'image' => false
     ];
-
 
 
     /**
@@ -36,9 +36,9 @@ class Product extends DbModel
 
 
     public static function getTableName()
-   {
-       return "products";
-   }
+    {
+        return "products";
+    }
 
 
 }

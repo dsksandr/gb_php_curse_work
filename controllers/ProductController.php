@@ -1,11 +1,13 @@
 <?php
 
-
 namespace app\controllers;
 
 
-class ProductController
+use app\models\ProductModel;
+
+class ProductController extends Controller
 {
+
     public function actionIndex()
     {
         echo $this->render('index');
@@ -13,13 +15,13 @@ class ProductController
 
     public function actionCatalog()
     {
-        $catalog = Product::getAll();
+        $catalog = ProductModel::getAll();
         echo $this->render('catalog', ['catalog' => $catalog]);
     }
 
     public function actionApiCatalog()
     {
-        $catalog = Product::getAll();
+        $catalog = ProductModel::getAll();
         echo json_encode($catalog, JSON_UNESCAPED_UNICODE);
         die();
     }
@@ -27,7 +29,8 @@ class ProductController
     public function actionCard()
     {
         $id = $_GET['id'];
-        $product = Product::getOne($id);
+        $product = ProductModel::getOne($id);
         echo $this->render('card', ['product' => $product]);
     }
+
 }

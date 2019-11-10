@@ -1,12 +1,13 @@
 <?php
 
-namespace app\engine;
+namespace app\core;
 
-use app\traits\TSingletone;
 
-class Db
+use app\traits\TSingleton;
+
+class DB
 {
-    use TSingletone;
+    use TSingleton;
 
     private $config = [
         'driver' => 'mysql',
@@ -20,7 +21,8 @@ class Db
     private $connection = null;
 
 
-    private function getConnection() {
+    private function getConnection()
+    {
         if (is_null($this->connection)) {
             $this->connection = new \PDO($this->prepareDSNString(),
                 $this->config['login'],
@@ -30,32 +32,37 @@ class Db
         }
         return $this->connection;
     }
+
 //"SELECT * FROM goods WHERE id = :id;", ["id" => 1]
-    private function query($sql, $params){
+    private function query($sql, $params)
+    {
         $pdoStatement = $this->getConnection()->prepare($sql);
         $pdoStatement->execute($params);
 
         return $pdoStatement;
     }
 
-    public function lastInsertId() {
+    public function lastInsertId()
+    {
         return $this->connection->lastInsertId();
     }
 
-    public function queryObject($sql, $params, $class){
+    public function queryObject($sql, $params, $class)
+    {
         $pdoStatement = $this->query($sql, $params);
         $pdoStatement->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $class);
         return $pdoStatement->fetch();
     }
 
-    public function execute($sql, $params) {
+    public function execute($sql, $params)
+    {
         $this->query($sql, $params);
         return true;
     }
 
 
-
-    private function prepareDSNString() {
+    private function prepareDSNString()
+    {
         return sprintf("%s:host=%s;dbname=%s;charset=%s",
             $this->config['driver'],
             $this->config['host'],
@@ -77,7 +84,7 @@ class Db
 
     public function __toString()
     {
-        return "Db";
+        return "DB";
     }
 
 }

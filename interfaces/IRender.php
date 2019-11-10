@@ -4,7 +4,7 @@
 namespace app\interfaces;
 
 
-interface IRenderer
+interface IRender
 {
     public function renderTemplate($template, $params = []);
 }

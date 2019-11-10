@@ -4,13 +4,16 @@
 namespace app\controllers;
 
 
-class AuthController
+class AuthController extends Controller
 {
-    public function actionLogin() {
+    public function actionLogin()
+    {
 
     }
 
-    public function actionLogout() {
+    public function actionLogout()
+    {
 
     }
+
 }

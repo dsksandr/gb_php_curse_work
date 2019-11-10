@@ -1,8 +1,9 @@
 <?php
+
 namespace app\models;
 
 
-class Cart extends DbModel
+class CartModel extends DBModel
 {
     public $id;
     public $session_id;

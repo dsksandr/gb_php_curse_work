@@ -4,7 +4,9 @@
 namespace app\controllers;
 
 
-class Controller
+use app\interfaces\IRender;
+
+abstract class Controller implements IRender
 {
     private $action;
     private $defaultAction = 'index';
@@ -16,7 +18,7 @@ class Controller
      * Controller constructor.
      * @param $renderer
      */
-    public function __construct(IRenderer $renderer)
+    public function __construct(IRender $renderer)
     {
         $this->renderer = $renderer;
     }

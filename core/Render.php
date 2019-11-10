@@ -1,21 +1,21 @@
 <?php
 
 
-namespace app\engine;
+namespace app\core;
 
 
-use app\interfaces\IRenderer;
+use app\interfaces\IRender;
 
-class Render implements IRenderer
+class Render implements IRender
 {
-    public function renderTemplate($template, $params = []) {
+    public function renderTemplate($template, $params = [])
+    {
         ob_start();
         extract($params);
-        $templatePath = TEMPLATES_DIR . $template . ".php";
+        $templatePath = TPL_DIR . $template . ".php";
         if (file_exists($templatePath)) {
             include $templatePath;
         }
         return ob_get_clean();
     }
-
 }
