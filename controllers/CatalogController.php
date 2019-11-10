@@ -9,15 +9,12 @@ use app\models\ProductModel;
 
 class CatalogController extends Controller
 {
-    function createParams($ctrlParams = [])
+    function createParams()
     {
-        $catalog = ProductModel::getAll();
-        var_dump($catalog);
-        $twig = new Render([
-                'page' => 'catalog',
-                'catalog' => $catalog
-            ]
-        );
+        $this->params['page'] = 'catalog';
+        $this->params['catalog'] = ProductModel::getAll();
+
+        $twig = new Render($this->params);
         echo $twig->render();
     }
 }

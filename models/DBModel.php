@@ -36,7 +36,7 @@ abstract class DBModel extends Model
 
         $tableName = static::getTableName();
 
-        $sql = "INSERT INTO {$tableName} ({$columns}) VALUES ({$values})";
+        $sql = "INSERT INTO '{$tableName}' ('{$columns}') VALUES ('{$values}')";
 
         DB::getInstance()->execute($sql, $params);
 
@@ -80,5 +80,4 @@ abstract class DBModel extends Model
     }
 
     abstract public static function getTableName();
-
 }

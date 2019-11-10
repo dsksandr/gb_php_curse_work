@@ -6,7 +6,7 @@ $(() => {
                 save = $("[name='save']").val() || null;
 
 
-            const request = $.ajax("/api.php?action=auth", {
+            const request = $.ajax("/api/auth/?action=login", {
                 type: "POST",
                 dataType: "json",
                 data: {

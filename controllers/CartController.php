@@ -8,12 +8,11 @@ use app\core\Render;
 
 class CartController extends Controller
 {
-    public function createParams($ctrlParams = [])
+    public function createParams()
     {
-        $twig = new Render([
-                'page' => 'cart',
-            ]
-        );
+        $this->params['page'] = 'cart';
+
+        $twig = new Render($this->params);
         echo $twig->render();
     }
 

@@ -8,12 +8,11 @@ use app\core\Render;
 
 class IndexController extends Controller
 {
-    public function createParams($ctrlParams = [])
+    public function createParams()
     {
-        $twig = new Render([
-                'page' => 'index',
-            ]
-        );
+        $this->params['page'] = 'index';
+
+        $twig = new Render($this->params);
         echo $twig->render();
     }
 }

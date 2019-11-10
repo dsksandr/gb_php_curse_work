@@ -1,11 +1,21 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Shop</title>
+    <title>BrandShop</title>
+    <link rel="stylesheet"
+          href="/styles/style.css"
+    >
 </head>
 <body>
-{% include './header.twig' %}
-{% include './' ~ page ~ '.twig' %}
+<div class="wrapper">
+    {% include './header.twig' %}
+    {% include './' ~ page ~ '.twig' %}
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="/scripts/auth.js"></script>
+<script src="/scripts/main.js"></script>
 </body>
 </html>

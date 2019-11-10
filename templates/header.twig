@@ -1,9 +1,38 @@
-<header>
-    <nav>
-        <ul>
-            <li><a href="/">Главная</a></li>
-            <li><a href="/catalog/">Каталог</a></li>
-            <li><a href="/cart/">Корзина</a></li>
-        </ul>
-    </nav>
+<header class="header">
+    <div class="container header__inner ">
+        <div class="header__logo"><a href="/">BrandShop</a></div>
+        <nav>
+            <ul>
+                <li><a href="/">Главная</a></li>
+                <li><a href="/catalog/">Каталог</a></li>
+                <li><a href="/cart/">Корзина</a></li>
+            </ul>
+        </nav>
+
+        <div class="auth">
+            <div class="auth__greeting"
+                 style="display: {% if allow == true %} block {% else %} none {% endif %}"
+            >
+                Вы вошли как: <span class="login"> {{ user }} </span> <a href="/?logout">Выйти</a>
+            </div>
+            <form method="post"
+                  class="auth__form"
+                  style="display: {% if allow != true %} block {% else %} none {% endif %}"
+            >
+                <input type='text'
+                       name='login'
+                       placeholder='Логин'
+                >
+                <input type='password'
+                       name='pass'
+                       placeholder='Пароль'
+                >
+                Save? <input type='checkbox'
+                             name='save'
+                >
+                <span id="login">Войти</span>
+            </form>
+        </div>
+
+    </div>
 </header>

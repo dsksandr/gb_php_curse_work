@@ -6,5 +6,5 @@ namespace app\interfaces;
 
 interface IController
 {
-  function createParams($ctrlParams = []);
+  function createParams();
 }

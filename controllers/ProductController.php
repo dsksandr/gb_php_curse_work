@@ -8,15 +8,12 @@ use app\models\ProductModel;
 
 class ProductController extends Controller
 {
-    public function createParams($ctrlParams = [])
+    public function createParams()
     {
-        $id = $_GET['id'];
-        $product = ProductModel::getOne($id);
-        $twig = new Render([
-                'page' => 'product',
-                'product' => $product
-            ]
-        );
+        $this->params['page'] = 'product';
+        $this->params['product'] = ProductModel::getOne($_GET['id']);
+
+        $twig = new Render($this->params);
         echo $twig->render();
     }
 }
