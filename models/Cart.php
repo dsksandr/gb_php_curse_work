@@ -1,13 +1,28 @@
 <?php
-
-
 namespace app\models;
 
 
-class Cart extends Model
+class Cart extends DbModel
 {
-    public function getTableName()
+    public $id;
+    public $session_id;
+    public $goods_id;
+
+    /**
+     * Basket constructor.
+     * @param $session_id
+     * @param $goods_id
+     */
+    public function __construct($session_id = null, $goods_id = null)
     {
-        return "cart";
+        $this->session_id = $session_id;
+        $this->goods_id = $goods_id;
     }
+
+
+    public static function getTableName()
+    {
+        return "basket";
+    }
+
 }
