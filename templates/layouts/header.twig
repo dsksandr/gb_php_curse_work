@@ -5,7 +5,7 @@
             <ul>
                 <li><a href="/">Главная</a></li>
                 <li><a href="/catalog/">Каталог</a></li>
-                <li><a href="/cart/">Корзина</a></li>
+                <li><a href="/cart/">🛒</a></li>
             </ul>
         </nav>
 
@@ -22,15 +22,20 @@
                 <input type='text'
                        name='login'
                        placeholder='Логин'
+                       required
                 >
                 <input type='password'
                        name='pass'
                        placeholder='Пароль'
+                       required
                 >
                 Save? <input type='checkbox'
                              name='save'
                 >
-                <span id="login">Войти</span>
+                <input type="submit"
+                       value="Войти"
+                       id="login"
+                >
             </form>
         </div>
 

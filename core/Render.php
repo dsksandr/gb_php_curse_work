@@ -11,12 +11,16 @@ class Render
 {
     private $twig;
     private $loader;
-    private $template = 'layouts' . DS . 'main.twig';
+    private $template = 'main.twig';
     private $params;
 
     public function __construct($params)
     {
-        $this->loader = new FilesystemLoader(TPL_DIR);
+        $paths =  array_merge(
+            [TPL_DIR],
+            glob(TPL_DIR . DS . '*' , GLOB_ONLYDIR)
+        );
+        $this->loader = new FilesystemLoader($paths);
         $this->twig = new Environment($this->loader, []);
         $this->params = $params;
     }

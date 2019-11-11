@@ -10,9 +10,21 @@ class AuthController extends Controller
 {
     public function createParams()
     {
+        return true;
+    }
+
+    public function formApiAnswer()
+    {
         $action = $this->params['action'];
 
-        echo json_encode($this->$action(), JSON_UNESCAPED_UNICODE);
+        if (method_exists($this, $action)) {
+            $result = $this->$action();
+        } else {
+            $result['status'] = false;
+            $result['message'] = 'Метода не существует';
+        }
+
+        echo json_encode($result, JSON_UNESCAPED_UNICODE);
         die();
     }
 

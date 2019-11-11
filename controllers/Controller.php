@@ -14,15 +14,18 @@ abstract class Controller implements IController
     {
         $this->params = $params;
 
-        if ($this->$params['type'] !== 'api') {
+        if ($this->params['type'] !== 'api') {
             if (AuthController::isAuth()) {
                 $this->params['allow'] = true;
                 $this->params['user'] = AuthController::getUser();
             } else {
                 $this->params['allow'] = false;
             }
-        }
 
-        $this->createParams();
+            $this->createParams();
+        } else {
+
+            $this->formApiAnswer();
+        }
     }
 }
