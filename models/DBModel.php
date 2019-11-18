@@ -3,7 +3,7 @@
 namespace app\models;
 
 
-use app\core\DB;
+use app\core\Db;
 
 abstract class DBModel extends Model
 {
@@ -38,9 +38,9 @@ abstract class DBModel extends Model
 
         $sql = "INSERT INTO '{$tableName}' ('{$columns}') VALUES ('{$values}')";
 
-        DB::getInstance()->execute($sql, $params);
+        Db::getInstance()->execute($sql, $params);
 
-        $this->id = DB::getInstance()->lastInsertId();
+        $this->id = Db::getInstance()->lastInsertId();
 
         return $this;
     }
@@ -49,7 +49,7 @@ abstract class DBModel extends Model
     {
         $tableName = static::getTableName();
         $sql = "DELETE FROM `{$tableName}` WHERE `id` = :id";
-        return DB::getInstance()->execute($sql, ["id" => $this->id]);
+        return Db::getInstance()->execute($sql, ["id" => $this->id]);
     }
 
     public function update()
@@ -69,14 +69,14 @@ abstract class DBModel extends Model
     {
         $tableName = static::getTableName();
         $sql = "SELECT * FROM `{$tableName}` WHERE `id` = :id";
-        return DB::getInstance()->queryObject($sql, ['id' => $id], static::class);
+        return Db::getInstance()->queryObject($sql, ['id' => $id], static::class);
     }
 
     public static function getAll()
     {
         $tableName = static::getTableName();
         $sql = "SELECT * FROM `{$tableName}`";
-        return DB::getInstance()->queryAll($sql);
+        return Db::getInstance()->queryAll($sql);
     }
 
     abstract public static function getTableName();

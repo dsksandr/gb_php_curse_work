@@ -3,7 +3,7 @@
 namespace app\models;
 
 
-use app\core\DB;
+use app\core\Db;
 
 class CartModel extends DBModel
 {
@@ -35,7 +35,7 @@ class CartModel extends DBModel
                 ON DUPLICATE KEY UPDATE `count` = `count` + ?;
         ";
 
-        return DB::getInstance()->execute($sql, [$id, $session_id, $quantity]);
+        return Db::getInstance()->execute($sql, [$id, $session_id, $quantity]);
     }
 
     public static function getCartCount()
@@ -46,7 +46,7 @@ class CartModel extends DBModel
             SELECT SUM(`count`) as count FROM `{$tableName}`
                 WHERE `session_id` = ?;
         ";
-        return DB::getInstance()->queryOne($sql, [$session_id])['count'];
+        return Db::getInstance()->queryOne($sql, [$session_id])['count'];
     }
 
     public function getProductsFromCart()
@@ -56,7 +56,7 @@ class CartModel extends DBModel
                 INNER JOIN `cart` ON `products`.`id` = `cart`.`product_id` 
                 WHERE `cart`.`session_id` = ? AND `count` != 0;
         ";
-        return DB::getInstance()->queryAll($sql, [$this->sessionId]);
+        return Db::getInstance()->queryAll($sql, [$this->sessionId]);
     }
 
     public static function getTableName()

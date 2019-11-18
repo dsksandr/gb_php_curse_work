@@ -21,11 +21,29 @@ $(() => {
                     save: save,
                 },
                 success: data => {
-                    if (data.status) {
+                    if (data['status']) {
                         console.log(data);
                         $('.auth__form').hide();
-                        $('.auth__greeting .login').text(data.login);
+                        $('.auth__greeting .login').text(data['login']);
                         $('.auth__greeting').show();
+                    } else {
+                        console.log(data);
+                    }
+                },
+            });
+        }
+    });
+    $("#logout").on({
+        click: function (e) {
+            e.preventDefault();
+
+            const request = $.ajax("/api/auth/?action=logout", {
+                type: "GET",
+                dataType: "json",
+                success: data => {
+                    if (data['status']) {
+                        console.log(data);
+                        $(location).attr('href', data['http_referer']);
                     } else {
                         console.log(data);
                     }

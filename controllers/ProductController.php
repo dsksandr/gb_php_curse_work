@@ -11,7 +11,7 @@ class ProductController extends Controller
     public function createParams()
     {
         $this->params['page'] = 'product';
-        $this->params['product'] = ProductModel::getOne($_GET['id']);
+        $this->params['product'] = ProductModel::getOne($this->request['id']);
 
         $twig = new Render($this->params);
         echo $twig->render();

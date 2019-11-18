@@ -26,7 +26,7 @@ class CartController extends Controller
         $action = $this->params['action'];
 
         if (method_exists($this, $action)) {
-            $result['status'] = $this->$action($_GET['id']);
+            $result['status'] = $this->$action($this->request['id']);
             if ($result['status']) {
                 $result['count'] = CartModel::getCartCount();
             } else {

@@ -3,7 +3,7 @@
 namespace app\traits;
 
 
-use app\core\DB;
+use app\core\Db;
 
 trait TSingleton
 {
@@ -22,7 +22,7 @@ trait TSingleton
     }
 
     /**
-     * @return DB
+     * @return Db
      */
     public static function getInstance()
     {

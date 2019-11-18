@@ -6,7 +6,7 @@ namespace app\core;
 use app\traits\TSingleton;
 use PDO;
 
-class DB
+class Db
 {
     use TSingleton;
 

@@ -3,7 +3,7 @@
 namespace app\models;
 
 
-use app\core\DB;
+use app\core\Db;
 
 class UserModel extends DBModel
 {
@@ -35,14 +35,14 @@ class UserModel extends DBModel
     {
         $tableName = static::getTableName();
         $sql = "SELECT * FROM `{$tableName}` WHERE `{$key}` = ?";
-        return DB::getInstance()->queryObject($sql, [$value], static::class);
+        return Db::getInstance()->queryObject($sql, [$value], static::class);
     }
 
     public static function updateUserData($id, $hash)
     {
         $tableName = static::getTableName();
         $sql = "UPDATE `{$tableName}` SET hash = `{$hash}` WHERE users . id = `{$id}`";
-        DB::getInstance()->execute($sql, []);
+        Db::getInstance()->execute($sql, []);
         return true;
     }
 

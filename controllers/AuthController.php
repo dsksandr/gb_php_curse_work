@@ -4,6 +4,7 @@
 namespace app\controllers;
 
 
+use app\core\Session;
 use app\models\UserModel;
 
 class AuthController extends Controller
@@ -31,20 +32,20 @@ class AuthController extends Controller
     public function login()
     {
         $result = [];
-        $login = $_POST['login'];
-        $pass = $_POST['pass'];
+        $login = $this->request['login'];
+        $pass = $this->request['pass'];
 
         if (!$this->checkLogPwd($login, $pass)) {
             $result['status'] = false;
             $result['text'] = 'Не верный логин или пароль';
         } else {
-            if (isset($_POST['save'])) {
+            if (isset($this->request['save'])) {
                 $hash = uniqid(rand(), true);
-                $id = ($_SESSION['id']);
+                $id = $this->session['id'];
 
                 UserModel::updateUserData($id, $hash);
 
-                setcookie("hash", $hash, time() + 3600);
+                setcookie('hash', $hash, time() + 3600);
             }
             $result['status'] = true;
             $result['login'] = $login;
@@ -53,27 +54,29 @@ class AuthController extends Controller
         return $result;
     }
 
-    public function actionLogout()
+    public function logout()
     {
+        session_destroy();
+        session_unset();
+        setcookie('hash');
 
+        $result['status'] = true;
+        $result['http_referer'] = $_SERVER['HTTP_REFERER'];
+
+        return $result;
     }
 
-    public static function isAuth()
+    public static function isAuth(Session $session)
     {
-        if (isset($_COOKIE["hash"])) {
-            $hash = $_COOKIE["hash"];
+        if (isset($_COOKIE['hash'])) {
+            $hash = $_COOKIE['hash'];
             $user_data = UserModel::getUser('hash', $hash);
             $user = $user_data['login'];
             if (!empty($user)) {
-                $_SESSION['login'] = $user;
+                $session['login'] = $user;
             }
         }
-        return isset($_SESSION['login']) ? true : false;
-    }
-
-    public static function getUser()
-    {
-        return $_SESSION['login'];
+        return isset($session['login']) ? true : false;
     }
 
     protected function checkLogPwd($login, $pass)
@@ -81,8 +84,8 @@ class AuthController extends Controller
         $user_data = UserModel::getUser('login', $login);
 
         if (password_verify($pass, $user_data->password)) {
-            $_SESSION['login'] = $login;
-            $_SESSION['id'] = $user_data->id;
+            $this->session['login'] = $login;
+            $this->session['id'] = $user_data->id;
             return true;
         }
         return false;
