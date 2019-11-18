@@ -1,0 +1,47 @@
+<div class="container">
+    <h1>Каталог</h1>
+</div>
+<div class="container margin-top-1">
+    {% for item in catalog %}
+        <div class="item-box product-card">
+            <div class="item-box-inner product-card__inner">
+                <a href="/product/?id={{ item.id }}">
+                    <div class="product__img-wrapper">
+                        <div class="product__img"
+                             style="background-image: url('/images/products/previews/{{ item.image }}')"
+                        ></div>
+                    </div>
+                    <div class="product-card__text-wrapper">
+                        <div class="product-card__title">
+                            {{ item.name }}
+                        </div>
+                        <div class="product__price-wrapper product-card__price-wrapper">
+                            <div class="product-card__price-value">
+                                {{ item.price | number_format(0, '', ' ') }}
+                            </div>
+                            <div class="product__price-currency product-card__price-currency">
+                                p.
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <div class="product__btn-wrapper product-card__btn-wrapper">
+                    <a href="/product/?id={{ item.id }}"
+                       class="product__btn product-card__btn"
+                    >
+                        <table>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    Узнать больше
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    {% endfor %}
+</div>

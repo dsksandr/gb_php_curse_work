@@ -1,34 +1,28 @@
 <?php
 
-
 namespace app\models;
 
-use app\core\Db;
-use app\interfaces\IModels;
 
+use app\interfaces\IModels;
 
 abstract class Model implements IModels
 {
-    protected $db;
 
-    public function __construct(Db $db)
+    public function __set($name, $value)
     {
-        $this->db = $db;
+        //TODO можно сделать проверку, а существует ли такое поле
+
+        $this->props[$name] = true;
+        $this->$name = $value;
     }
 
-    public function getItem($id)
+    public function __get($name)
     {
-        $tableName = $this->getTableName();
-        $sql = "SELECT * FROM `{$tableName}` WHERE `id` = `{$id}`";
-        return $this->db->queryOne($sql);
+        return $this->$name;
     }
 
-    public function getAll()
+    public function __isset($name)
     {
-        $tableName = $this->getTableName();
-        $sql = "SELECT * FROM `{$tableName}`";
-        return $this->db->queryOne($sql);
+        return $name;
     }
-
-    abstract public function getTableName();
 }

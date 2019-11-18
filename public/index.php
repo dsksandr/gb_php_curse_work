@@ -1,27 +1,24 @@
 <?php
+session_start();
 
-use app\core\Db;
-use app\models\{Cart, Users};
-use app\models\product\{Goods, GoodsDigital, GoodsWeight, Product};
+use app\controllers\Controller;
+use app\core\{Autoload, TwigRender, Request, Session};
 
-define('DS', DIRECTORY_SEPARATOR);
-include dirname(__DIR__) . DS . 'core' . DS . "Autoload.php";
+include realpath("../config/config.php");
 
 spl_autoload_register([new Autoload(), 'loadClass']);
 
-$goods = new Goods(new Db());
-$goodsWeight = new GoodsWeight(new Db(), 3);
-$goodsDigital = new GoodsDigital(new Db());
-$users = new Users(new Db());
-$cart = new Cart(new Db());
+$request = new Request();
 
-function foo(Product $product)
-{
-    return $product->showInfo();
+$controllerClass = CTRL_NAMESPACE . ucfirst($request->getControllerName()) . "Controller";
+
+if (class_exists($controllerClass)) {
+    /** @var Controller $controller */
+    $controller = new $controllerClass(
+        new Session(),
+        $request,
+        new TwigRender()
+    );
+} else {
+    echo "404 controller";
 }
-
-echo foo($goods) . '<br>';
-echo foo($goodsWeight) . '<br>';
-echo foo($goodsDigital) . '<br>';
-
-//echo $product->getOne(1);

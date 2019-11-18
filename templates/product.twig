@@ -1,0 +1,54 @@
+<div class="container column">
+    <a href="/catalog">← Назад</a>
+    <div class="product-item">
+        <div class="product-item__inner">
+            <div class="product-item__inner-col product-item__inner-col_left">
+                <div class="product__img-wrapper">
+                    <div class="product__img"
+                         style="background-image: url('/images/products/previews/{{ product.image }}')"
+                    ></div>
+                </div>
+            </div>
+            <div class="product-item__inner-col product-item__inner-col_right">
+                <div class="product-item__title-wrapper">
+                    <h1 class="product-item__name">{{ product.name }}</h1>
+                    <div class="product-item__vendor-code-wrapper">
+                        <span>Артикул:</span><span class="product-item__vendor-code-value"></span>
+                    </div>
+                </div>
+                <div class="product__price-wrapper product-item__price-wrapper">
+                    <div class="product-item__price-value">
+                        {{ product.price | number_format(0, '', ' ') }}
+                    </div>
+                    <div class="product__price-currency product-item__price-currency">
+                        p.
+                    </div>
+                </div>
+                <div class="product___btn-wrapper product-item__btn-wrapper">
+                    <a href="#"
+                       id="add-to-cart"
+                       class="product__btn product-item__btn"
+                       data-id="{{ product.id }}"
+                       data-action="add"
+                    >
+                        <table>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    Добавить в корзину
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </a>
+                </div>
+                <div class="product-item__desc-wrapper">
+                    {{ product.description }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

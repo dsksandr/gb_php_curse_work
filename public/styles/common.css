@@ -52,7 +52,7 @@ li {
     flex-wrap: wrap;
     margin-right: auto;
     margin-left: auto;
-    max-width: 1200px;
+    width: 1200px;
 }
 
 .container.column {

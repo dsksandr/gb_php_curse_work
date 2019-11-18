@@ -1,12 +1,18 @@
 $(() => {
     $("#login").on({
-        click: function () {
+        click: function (e) {
+            e.preventDefault();
+
             const login = $("[name='login']").val(),
                 pass = $("[name='pass']").val(),
                 save = $("[name='save']").val() || null;
 
+            if (login === '' || pass === '') {
+                alert('Введите логин и пароль!');
+                return;
+            }
 
-            const request = $.ajax("/api.php?action=auth", {
+            const request = $.ajax("/api/auth/?action=login", {
                 type: "POST",
                 dataType: "json",
                 data: {
@@ -14,19 +20,35 @@ $(() => {
                     pass: pass,
                     save: save,
                 },
+                success: data => {
+                    if (data['status']) {
+                        console.log(data);
+                        $('.auth__form').hide();
+                        $('.auth__greeting .login').text(data['login']);
+                        $('.auth__greeting').show();
+                    } else {
+                        console.log(data);
+                    }
+                },
             });
-            request.done(function (answer) {
-                    console.log(answer);
-                    $('.auth__form').hide();
-                    $('.auth__greeting .login').text(answer.login);
-                    $('.auth__greeting').show();
+        }
+    });
+    $("#logout").on({
+        click: function (e) {
+            e.preventDefault();
+
+            const request = $.ajax("/api/auth/?action=logout", {
+                type: "GET",
+                dataType: "json",
+                success: data => {
+                    if (data['status']) {
+                        console.log(data);
+                        $(location).attr('href', data['http_referer']);
+                    } else {
+                        console.log(data);
+                    }
                 },
-            );
-            request.fail(function (answer) {
-                    alert(answer);
-                    console.log(answer);
-                },
-            )
+            });
         }
     });
 });
