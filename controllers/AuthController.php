@@ -4,7 +4,6 @@
 namespace app\controllers;
 
 
-use app\core\Session;
 use app\models\UserModel;
 
 class AuthController extends Controller
@@ -41,7 +40,7 @@ class AuthController extends Controller
         } else {
             if (isset($this->request['save'])) {
                 $hash = uniqid(rand(), true);
-                $id = $this->session['id'];
+                $id = $this->session->id;
 
                 UserModel::updateUserData($id, $hash);
 
@@ -66,17 +65,17 @@ class AuthController extends Controller
         return $result;
     }
 
-    public static function isAuth(Session $session)
+    public static function isAuth($session)
     {
         if (isset($_COOKIE['hash'])) {
             $hash = $_COOKIE['hash'];
             $user_data = UserModel::getUser('hash', $hash);
             $user = $user_data['login'];
             if (!empty($user)) {
-                $session['login'] = $user;
+                $session->login = $user;
             }
         }
-        return isset($session['login']) ? true : false;
+        return isset($session->login) ? true : false;
     }
 
     protected function checkLogPwd($login, $pass)
@@ -84,8 +83,8 @@ class AuthController extends Controller
         $user_data = UserModel::getUser('login', $login);
 
         if (password_verify($pass, $user_data->password)) {
-            $this->session['login'] = $login;
-            $this->session['id'] = $user_data->id;
+            $this->session->login = $login;
+            $this->session->login = $user_data->id;
             return true;
         }
         return false;

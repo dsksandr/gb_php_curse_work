@@ -24,10 +24,9 @@ abstract class Controller implements IController
     protected function init()
     {
         if ($this->params['type'] !== 'api') {
-
             if (AuthController::isAuth($this->session)) {
                 $this->params['allow'] = true;
-                $this->params['user'] = $this->session['login'];
+                $this->params['user'] = $this->session->login;
             } else {
                 $this->params['allow'] = false;
             }
