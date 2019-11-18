@@ -18,7 +18,7 @@
                 </div>
                 <div class="product__price-wrapper product-item__price-wrapper">
                     <div class="product-item__price-value">
-                        {{ product.price }}
+                        {{ product.price | number_format(0, '', ' ') }}
                     </div>
                     <div class="product__price-currency product-item__price-currency">
                         p.
@@ -29,6 +29,7 @@
                        id="add-to-cart"
                        class="product__btn product-item__btn"
                        data-id="{{ product.id }}"
+                       data-action="add"
                     >
                         <table>
                             <tbody>

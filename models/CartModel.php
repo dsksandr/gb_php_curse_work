@@ -17,7 +17,7 @@ class CartModel extends DBModel
     public function __construct()
     {
         $this->sessionId = static::getSessionId();
-        $this->count = $this->getCartCount();
+        $this->count = static::getCartCount();
         $this->cart = $this->getProductsFromCart();
     }
 
@@ -26,26 +26,27 @@ class CartModel extends DBModel
         return session_id();
     }
 
-    public static function addToCart($id)
+    public static function changeProductCount($id, $quantity)
     {
         $session_id = static::getSessionId();
         $tableName = static::getTableName();
         $sql = "
             INSERT INTO `{$tableName}` (`product_id`, `session_id`) VALUES (?, ?)
-                ON DUPLICATE KEY UPDATE `count` = `count` + 1;
+                ON DUPLICATE KEY UPDATE `count` = `count` + ?;
         ";
 
-        return DB::getInstance()->execute($sql, [$id, $session_id]);
+        return DB::getInstance()->execute($sql, [$id, $session_id, $quantity]);
     }
 
-    public function getCartCount()
+    public static function getCartCount()
     {
+        $session_id = static::getSessionId();
         $tableName = static::getTableName();
         $sql = "
             SELECT SUM(`count`) as count FROM `{$tableName}`
                 WHERE `session_id` = ?;
         ";
-        return DB::getInstance()->queryAll($sql, [$this->sessionId]);
+        return DB::getInstance()->queryOne($sql, [$session_id])['count'];
     }
 
     public function getProductsFromCart()
@@ -53,30 +54,9 @@ class CartModel extends DBModel
         $sql = "
             SELECT `cart`.`id`, `count`, `name`, `price`, `product_id`, `image` FROM `products` 
                 INNER JOIN `cart` ON `products`.`id` = `cart`.`product_id` 
-                WHERE `cart`.`session_id` = ?;
+                WHERE `cart`.`session_id` = ? AND `count` != 0;
         ";
         return DB::getInstance()->queryAll($sql, [$this->sessionId]);
-    }
-
-    public function deleteProductFromCart($id)
-    {
-        $id = (int)$id;
-        $session_id = session_id();
-
-        $sql_update = "
-        UPDATE `cart` 
-            SET `count` = `count` - 1
-            WHERE `product_id` = '{$id}' AND `session_id` = '{$session_id}';
-    ";
-        $sql_delete = "
-        DELETE FROM `cart` 
-            WHERE `count` = 0;
-    ";
-
-        executeQueryToDB($sql_update);
-        executeQueryToDB($sql_delete);
-
-        return true;
     }
 
     public static function getTableName()

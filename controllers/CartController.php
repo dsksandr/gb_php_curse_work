@@ -26,7 +26,12 @@ class CartController extends Controller
         $action = $this->params['action'];
 
         if (method_exists($this, $action)) {
-            $result = $this->$action($_GET['id']);
+            $result['status'] = $this->$action($_GET['id']);
+            if ($result['status']) {
+                $result['count'] = CartModel::getCartCount();
+            } else {
+                $result['message'] = 'В ходе выполнеия операции возникла ошибка';
+            }
         } else {
             $result['status'] = false;
             $result['message'] = 'Метода не существует';
@@ -36,7 +41,13 @@ class CartController extends Controller
         die();
     }
 
-    public function add($id) {
-        return CartModel::addToCart($id);
+    public function add($id)
+    {
+        return CartModel::changeProductCount($id, 1);
+    }
+
+    public function del($id)
+    {
+        return CartModel::changeProductCount($id, -1);
     }
 }

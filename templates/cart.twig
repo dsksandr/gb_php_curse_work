@@ -16,26 +16,28 @@
                     {{ product.name }}
                 </div>
                 <div>
-                    {{ product.price }} p. *
+                    {{ product.price | number_format(0, '', ' ') }} p. *
                     <span>
-						<button class="del"
+						<button class="product-count-action"
                                 data-id="{{ product.product_id }}"
+                                data-action="del"
                         >
 							-
 						</button>
 					</span>
-                    <span id="prod-count">
+                    <span class="prod-count">
 						{{ product.count }}
 					</span>
                     <span>
-						<button class="add"
+						<button class="product-count-action"
                                 data-id="{{ product.product_id }}"
+                                data-action="add"
                         >
 							+
 						</button>
 					</span>
-					<span id="prod-sum">
-						{{ product.price * product.count }} p.
+					<span class="prod-sum">
+						{{ (product.price * product.count) | number_format(0, '', ' ') }} p.
 					</span>
                 </div>
             </div>

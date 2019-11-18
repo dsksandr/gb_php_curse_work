@@ -7,6 +7,7 @@ session_start();
 
 if (isset($_GET['logout'])) {
     session_destroy();
+    session_unset();
     setcookie("hash");
     header('Location:' . $_SERVER['HTTP_REFERER']);
 }

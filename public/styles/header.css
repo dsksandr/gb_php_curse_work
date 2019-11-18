@@ -28,3 +28,7 @@
 #login {
     cursor: pointer;
 }
+
+#cart-menu span {
+    margin-left: 6px;
+}

@@ -1,72 +1,64 @@
 $(() => {
-    $("#add-to-cart, .add").on({
+    $("#add-to-cart, .product-count-action").on({
         click: function (e) {
             const id = $(e.target).data('id');
+            const action = $(e.target).data('action');
 
-            console.log(id, e.target);
-            const request = $.ajax(`/api/cart/?action=add&id=${id}`, {
+            lockButton(e.target, true);
+
+            const request = $.ajax(`/api/cart/?action=${action}&id=${id}`, {
                 type: "GET",
-            });
-            request.done(function (answer) {
-                    if ($(e.target).hasClass('add')) {
-                        const product = $(`#product_id-${$(e.target).data('id')}`);
+                dataType: "json",
+                success: data => {
+                    rerenderCartCount(data['count']);
+                    lockButton(e.target, false);
 
-                        let product_price = product.data('price'),
-                            product_count = product.data('count');
+                    console.log(data);
 
-                        product.data('count', ++product_count);
-                        product
-                            .find('#prod-count')
-                            .text(product.data('count'));
-                        product
-                            .find('#prod-sum')
-                            .text(` ${product.data('count') * product_price} р.`);
+                    const product = $(`#product_id-${id}`);
+
+                    if (!product.length) return;
+
+                    const productCount = getProductCount(product, action);
+
+                    if (productCount <= 0) {
+                        removeProduct(product);
+                    } else {
+                        const productSum = getProductSum(product.data('price'), productCount);
+
+                        updateProductCount(product, productCount);
+                        rerenderProductPrice(product, productCount, productSum);
                     }
-                    $('a#cart-menu span').text(answer['count']);
-                    // console.log(answer);
-                },
-            );
-            request.fail(function (answer) {
-                    alert(answer['message']);
-                    // console.log(answer);
-                },
-            )
+                }
+            });
         }
     });
-    $(".del").on({
-        click: function (e) {
-            const id = $(e.target).data('id');
+    const lockButton = (button, bool) => $(button).prop('disabled', bool);
+    const removeProduct = (product) => product.remove();
+    const getProductCount = (product, action) => {
+        let productCount = product.data('count');
 
-            const request = $.ajax(`/api/cart/?action=del&id=${id}`, {
-                type: "GET",
-            });
-            request.done(function (answer) {
-                    const product = $(`#product_id-${$(e.target).data('id')}`);
-
-                    let product_price = product.data('price'),
-                        product_count = product.data('count');
-
-                    product.data('count', --product_count);
-
-                    if (product.data('count') === 0) {
-                        product.remove();
-                    }
-
-                    product
-                        .find('#prod-count')
-                        .text(product.data('count'));
-                    product
-                        .find('#prod-sum')
-                        .text(` ${product.data('count') * product_price} р.`);
-                    $('a#cart-menu span').text(answer['count']);
-                    console.log(answer);
-                },
-            );
-            request.fail(function (answer) {
-                    alert(answer['message']);
-                    console.log(answer);
-                },
-            )
+        if (action === 'add') {
+            ++productCount;
+        } else if (action === 'del') {
+            --productCount;
         }
-    });
+
+        return productCount;
+    };
+    const updateProductCount = (product, productCount) => product.data('count', productCount);
+    const getProductSum = (productPrice, productCount) => {
+        return (productCount * productPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    };
+    const rerenderProductPrice = (product, productCount, productSum) => {
+        product
+            .find('.prod-count')
+            .text(productCount);
+        product
+            .find('.prod-sum')
+            .text(` ${productSum} р.`);
+    };
+    const rerenderCartCount = (cartCount) => {
+        $('a#cart-menu span').text(cartCount > 0 ? cartCount : '');
+    }
 });

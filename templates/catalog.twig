@@ -17,7 +17,7 @@
                         </div>
                         <div class="product__price-wrapper product-card__price-wrapper">
                             <div class="product-card__price-value">
-                                {{ item.price }}
+                                {{ item.price | number_format(0, '', ' ') }}
                             </div>
                             <div class="product__price-currency product-card__price-currency">
                                 p.

@@ -5,7 +5,7 @@
             <ul>
                 <li><a href="/">Главная</a></li>
                 <li><a href="/catalog/">Каталог</a></li>
-                <li><a href="/cart/">🛒</a></li>
+                <li><a href="/cart/" id="cart-menu">🛒<span>{{ cart_count > 0 ? cart_count : '' }}</span></a></li>
             </ul>
         </nav>
 
