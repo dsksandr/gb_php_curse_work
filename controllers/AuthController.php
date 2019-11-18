@@ -4,6 +4,7 @@
 namespace app\controllers;
 
 
+use app\core\Session;
 use app\models\UserModel;
 
 class AuthController extends Controller
@@ -15,7 +16,7 @@ class AuthController extends Controller
 
     public function formApiAnswer()
     {
-        $action = $this->params['action'];
+        $action = $this->request->getActionName();
 
         if (method_exists($this, $action)) {
             $result = $this->$action();
@@ -40,7 +41,7 @@ class AuthController extends Controller
         } else {
             if (isset($this->request['save'])) {
                 $hash = uniqid(rand(), true);
-                $id = $this->session->id;
+                $id = $this->session->getUserId();
 
                 UserModel::updateUserData($id, $hash);
 
@@ -65,14 +66,14 @@ class AuthController extends Controller
         return $result;
     }
 
-    public static function isAuth($session)
+    public static function isAuth(Session $session)
     {
         if (isset($_COOKIE['hash'])) {
             $hash = $_COOKIE['hash'];
             $user_data = UserModel::getUser('hash', $hash);
             $user = $user_data['login'];
             if (!empty($user)) {
-                $session->login = $user;
+                $session->setUserLogin($user);
             }
         }
         return isset($session->login) ? true : false;
@@ -83,8 +84,8 @@ class AuthController extends Controller
         $user_data = UserModel::getUser('login', $login);
 
         if (password_verify($pass, $user_data->password)) {
-            $this->session->login = $login;
-            $this->session->login = $user_data->id;
+            $this->session->setUserLogin($login);
+            $this->session->setUserId($user_data->id);
             return true;
         }
         return false;

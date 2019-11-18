@@ -4,17 +4,17 @@
 namespace app\core;
 
 
+use app\interfaces\IRender;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-class Render
+class TwigRender implements IRender
 {
     private $twig;
     private $loader;
     private $template = 'main.twig';
-    private $params;
 
-    public function __construct($params)
+    public function __construct()
     {
         $paths =  array_merge(
             [TPL_DIR],
@@ -22,12 +22,14 @@ class Render
         );
         $this->loader = new FilesystemLoader($paths);
         $this->twig = new Environment($this->loader, []);
-        $this->params = $params;
     }
 
-    public function render()
+    /**
+     * @param $params
+     * @return mixed
+     */
+    public function render($params)
     {
-//        var_dump($this->params);
-        return $this->twig->render($this->template, $this->params);
+        return $this->twig->render($this->template, $params);
     }
 }

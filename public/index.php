@@ -2,7 +2,7 @@
 session_start();
 
 use app\controllers\Controller;
-use app\core\{Autoload, Request, Session};
+use app\core\{Autoload, TwigRender, Request, Session};
 
 include realpath("../config/config.php");
 
@@ -14,12 +14,11 @@ $controllerClass = CTRL_NAMESPACE . ucfirst($request->getControllerName()) . "Co
 
 if (class_exists($controllerClass)) {
     /** @var Controller $controller */
-    $controller = new $controllerClass([
-        'type' => $request->getType(),
-        'action' => $request->getActionName(),
-        'request' => $request->getParams(),
-        'session' => new Session(),
-    ]);
+    $controller = new $controllerClass(
+        new Session(),
+        $request,
+        new TwigRender()
+    );
 } else {
     echo "404 controller";
 }

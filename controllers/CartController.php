@@ -4,7 +4,7 @@
 namespace app\controllers;
 
 
-use app\core\Render;
+use app\core\TwigRender;
 use app\models\CartModel;
 
 class CartController extends Controller
@@ -17,16 +17,15 @@ class CartController extends Controller
         $this->params['cart'] = $cart->cart;
         $this->params['cart_count'] = $cart->count;
 
-        $twig = new Render($this->params);
-        echo $twig->render();
+        echo $this->renderer->render($this->params);
     }
 
     public function formApiAnswer()
     {
-        $action = $this->params['action'];
+        $action = $this->request->getActionName();
 
         if (method_exists($this, $action)) {
-            $result['status'] = $this->$action($this->request['id']);
+            $result['status'] = $this->$action($this->request->getParams()['id']);
             if ($result['status']) {
                 $result['count'] = CartModel::getCartCount();
             } else {
