@@ -4,7 +4,6 @@
 namespace app\controllers;
 
 
-use app\core\Session;
 use app\models\repositories\UserRepository;
 
 class AuthController extends Controller
@@ -35,7 +34,7 @@ class AuthController extends Controller
         $login = $this->request->getParams()['login'];
         $pass = $this->request->getParams()['pass'];
 
-        if (!$this->checkLogPwd($login, $pass)) {
+        if (!(new UserRepository())->checkLogPwd($login, $pass, $this->session)) {
             $result['status'] = false;
             $result['text'] = 'Не верный логин или пароль';
         } else {
@@ -64,34 +63,5 @@ class AuthController extends Controller
         $result['http_referer'] = $_SERVER['HTTP_REFERER'];
 
         return $result;
-    }
-
-    public static function isAuth(Session $session)
-    {
-        if (isset($_COOKIE['hash'])) {
-            $hash = $_COOKIE['hash'];
-            $user_data = (new UserRepository())->getUser('hash', $hash);
-            $user = $user_data['login'];
-            if (!empty($user)) {
-                $session->setUserLogin($user);
-            }
-        }
-        return isset($session->login) ? true : false;
-    }
-
-    protected function checkLogPwd($login, $pass)
-    {
-        $user_data = (new UserRepository())->getUser('login', $login);
-
-
-        if (password_verify($pass, $user_data->password)) {
-            $this->session->setUserLogin($login);
-            $this->session->setUserId($user_data->id);
-
-//            var_dump($user_data);
-//            var_dump($pass);
-            return true;
-        }
-        return false;
     }
 }

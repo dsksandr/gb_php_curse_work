@@ -9,6 +9,7 @@ use app\core\Session;
 use app\interfaces\IController;
 use app\interfaces\IRender;
 use app\models\repositories\CartRepository;
+use app\models\repositories\UserRepository;
 
 abstract class Controller implements IController
 {
@@ -39,7 +40,7 @@ abstract class Controller implements IController
     protected function init()
     {
         if ($this->request->getType() !== 'api') {
-            if (AuthController::isAuth($this->session)) {
+            if ((new UserRepository())->isAuth($this->session)) {
                 $this->params['allow'] = true;
                 $this->params['user'] = $this->session->getUserLogin();
             } else {
