@@ -4,10 +4,10 @@ namespace app\models;
 
 
 use app\core\Db;
+use app\interfaces\IModels;
 
-abstract class DBModel extends Model
+abstract class Repository implements IModels
 {
-
     public function getLimit($from, $to)
     {
 
@@ -18,12 +18,12 @@ abstract class DBModel extends Model
 
     }
 
-    public function insert()
+    public function insert(Model $entity)
     {
         $params = [];
         $columns = [];
 
-        foreach ($this as $key => $value) {
+        foreach ($entity as $key => $value) {
             if ($key == "id") continue;
             $params[":{$key}"] = $value;
             $columns[] = "`$key`";
@@ -32,66 +32,60 @@ abstract class DBModel extends Model
         $columns = implode(', ', $columns);
         $values = implode(', ', array_keys($params));
 
-        $tableName = static::getTableName();
+        $tableName = $this->getTableName();
 
         $sql = "INSERT INTO '{$tableName}' ('{$columns}') VALUES ('{$values}')";
 
         Db::getInstance()->execute($sql, $params);
 
-        $this->id = Db::getInstance()->lastInsertId();
-
-        return $this;
+        $entity->id = Db::getInstance()->lastInsertId();
     }
 
-    public function delete()
+    public function delete(Model $entity)
     {
-        $tableName = static::getTableName();
+        $tableName = $this->getTableName();
         $sql = "DELETE FROM `{$tableName}` WHERE `id` = ?";
-        return Db::getInstance()->execute($sql, [$this->id]);
+        return Db::getInstance()->execute($sql, [$entity->id]);
     }
 
-    public function update()
+    public function update(Model $entity)
     {
         $params = [];
         $columns = [];
 
-        foreach ($this->props as $key => $value) {
-            if (!$this->props[$key]) continue;
+        foreach ($entity->props as $key => $value) {
+            if (!$entity->props[$key]) continue;
             $params[":{$key}"] = $this->$key;
             $columns[] .= "`" . $key . "` = :" . $key;
-            $this->props[$key] = false;
+            $this->$entity[$key] = false;
         }
 
         $columns = implode(", ", $columns);
-        $tableName = static::getTableName();
+        $tableName = $this->getTableName();
 
         $sql = "UPDATE `{$tableName}` SET `{$columns}` WHERE `id` = ?";
-        Db::getInstance()->execute($sql, [$this->id]);
-
-        return $this;
+        Db::getInstance()->execute($sql, [$entity->id]);
     }
 
-    public function save()
+    public function save(Model $entity)
     {
-        if (is_null($this->id))
-            $this->insert();
+        if (is_null($entity->id))
+            $this->insert($entity);
         else
-            $this->update();
+            $this->update($entity);
     }
 
-    public static function getOne($id)
+    public function getOne($id)
     {
-        $tableName = static::getTableName();
+        $tableName = $this->getTableName();
         $sql = "SELECT * FROM `{$tableName}` WHERE `id` = :id";
-        return Db::getInstance()->queryObject($sql, ['id' => $id], static::class);
+        return Db::getInstance()->queryObject($sql, ['id' => $id], $this->getEntitiesName());
     }
 
-    public static function getAll()
+    public function getAll()
     {
-        $tableName = static::getTableName();
+        $tableName = $this->getTableName();
         $sql = "SELECT * FROM `{$tableName}`";
         return Db::getInstance()->queryAll($sql);
     }
-
-    abstract public static function getTableName();
 }

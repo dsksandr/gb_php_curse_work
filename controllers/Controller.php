@@ -8,7 +8,7 @@ use app\core\Request;
 use app\core\Session;
 use app\interfaces\IController;
 use app\interfaces\IRender;
-use app\models\CartModel;
+use app\models\repositories\CartRepository;
 
 abstract class Controller implements IController
 {
@@ -46,7 +46,7 @@ abstract class Controller implements IController
                 $this->params['allow'] = false;
             }
 
-            $this->params['cart_count'] = CartModel::getCartCount();
+            $this->params['cart_count'] = (new CartRepository())->getCartCount();
 
             $this->createParams();
         } else {

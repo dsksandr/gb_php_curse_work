@@ -1,35 +1,19 @@
 <?php
 
-namespace app\models;
+
+namespace app\models\repositories;
 
 
 use app\core\Db;
+use app\models\entities\CartModel;
+use app\models\Repository;
 
-class CartModel extends DBModel
+class CartRepository extends Repository
 {
-    public $sessionId;
-    public $count;
-    public $cart;
-
-    /**
-     * CartModel constructor.
-     */
-    public function __construct()
+    public function changeProductCount($id, $quantity)
     {
-        $this->sessionId = static::getSessionId();
-        $this->count = static::getCartCount();
-        $this->cart = $this->getProductsFromCart();
-    }
-
-    public static function getSessionId()
-    {
-        return session_id();
-    }
-
-    public static function changeProductCount($id, $quantity)
-    {
-        $session_id = static::getSessionId();
-        $tableName = static::getTableName();
+        $session_id = session_id();
+        $tableName = $this->getTableName();
         $sql = "
             INSERT INTO `{$tableName}` (`product_id`, `session_id`) VALUES (?, ?)
                 ON DUPLICATE KEY UPDATE `count` = `count` + ?;
@@ -38,10 +22,10 @@ class CartModel extends DBModel
         return Db::getInstance()->execute($sql, [$id, $session_id, $quantity]);
     }
 
-    public static function getCartCount()
+    public function getCartCount()
     {
-        $session_id = static::getSessionId();
-        $tableName = static::getTableName();
+        $session_id = session_id();
+        $tableName = $this->getTableName();
         $sql = "
             SELECT SUM(`count`) as count FROM `{$tableName}`
                 WHERE `session_id` = ?;
@@ -51,16 +35,22 @@ class CartModel extends DBModel
 
     public function getProductsFromCart()
     {
+        $session_id = session_id();
         $sql = "
             SELECT `cart`.`id`, `count`, `name`, `price`, `product_id`, `image` FROM `products` 
                 INNER JOIN `cart` ON `products`.`id` = `cart`.`product_id` 
                 WHERE `cart`.`session_id` = ? AND `count` != 0;
         ";
-        return Db::getInstance()->queryAll($sql, [$this->sessionId]);
+        return Db::getInstance()->queryAll($sql, [$session_id]);
     }
 
-    public static function getTableName()
+    public function getTableName()
     {
         return "cart";
+    }
+
+    public function getEntitiesName()
+    {
+        return CartModel::class;
     }
 }

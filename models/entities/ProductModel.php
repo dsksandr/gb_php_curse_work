@@ -1,9 +1,11 @@
 <?php
 
-namespace app\models;
+namespace app\models\entities;
 
 
-class ProductModel extends DBModel
+use app\models\Model;
+
+class ProductModel extends Model
 {
     protected $id;
     protected $name;
@@ -33,8 +35,4 @@ class ProductModel extends DBModel
         $this->image = $image;
     }
 
-    public static function getTableName()
-    {
-        return "products";
-    }
 }

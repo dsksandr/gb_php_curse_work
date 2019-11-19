@@ -5,7 +5,7 @@ namespace app\controllers;
 
 
 use app\core\Session;
-use app\models\UserModel;
+use app\models\repositories\UserRepository;
 
 class AuthController extends Controller
 {
@@ -43,7 +43,7 @@ class AuthController extends Controller
                 $hash = uniqid(rand(), true);
                 $id = $this->session->getUserId();
 
-                UserModel::updateUserData($id, $hash);
+                (new UserRepository())->updateUserData($id, $hash);
 
                 setcookie('hash', $hash, time() + 3600);
             }
@@ -70,7 +70,7 @@ class AuthController extends Controller
     {
         if (isset($_COOKIE['hash'])) {
             $hash = $_COOKIE['hash'];
-            $user_data = UserModel::getUser('hash', $hash);
+            $user_data = (new UserRepository())->getUser('hash', $hash);
             $user = $user_data['login'];
             if (!empty($user)) {
                 $session->setUserLogin($user);
@@ -81,11 +81,15 @@ class AuthController extends Controller
 
     protected function checkLogPwd($login, $pass)
     {
-        $user_data = UserModel::getUser('login', $login);
+        $user_data = (new UserRepository())->getUser('login', $login);
+
 
         if (password_verify($pass, $user_data->password)) {
             $this->session->setUserLogin($login);
             $this->session->setUserId($user_data->id);
+
+//            var_dump($user_data);
+//            var_dump($pass);
             return true;
         }
         return false;
