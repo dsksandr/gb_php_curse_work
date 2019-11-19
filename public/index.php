@@ -2,12 +2,12 @@
 session_start();
 
 use app\controllers\Controller;
-use app\core\{Autoload, Request, Session, TwigRender};
+use app\core\{Request, Session, TwigRender};
 
 try {
     include realpath("../config/config.php");
 
-    spl_autoload_register([new Autoload(), 'loadClass']);
+//    spl_autoload_register([new Autoload(), 'loadClass']);
 
     $request = new Request();
 
