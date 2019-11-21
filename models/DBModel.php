@@ -23,8 +23,6 @@ abstract class DBModel extends Model
         $params = [];
         $columns = [];
 
-        //var_dump($this->props);
-
         foreach ($this as $key => $value) {
             if ($key == "id") continue;
             $params[":{$key}"] = $value;
@@ -48,13 +46,29 @@ abstract class DBModel extends Model
     public function delete()
     {
         $tableName = static::getTableName();
-        $sql = "DELETE FROM `{$tableName}` WHERE `id` = :id";
-        return Db::getInstance()->execute($sql, ["id" => $this->id]);
+        $sql = "DELETE FROM `{$tableName}` WHERE `id` = ?";
+        return Db::getInstance()->execute($sql, [$this->id]);
     }
 
     public function update()
     {
-        //TODO сделать умный update по props
+        $params = [];
+        $columns = [];
+
+        foreach ($this->props as $key => $value) {
+            if (!$this->props[$key]) continue;
+            $params[":{$key}"] = $this->$key;
+            $columns[] .= "`" . $key . "` = :" . $key;
+            $this->props[$key] = false;
+        }
+
+        $columns = implode(", ", $columns);
+        $tableName = static::getTableName();
+
+        $sql = "UPDATE `{$tableName}` SET `{$columns}` WHERE `id` = ?";
+        Db::getInstance()->execute($sql, [$this->id]);
+
+        return $this;
     }
 
     public function save()

@@ -32,14 +32,14 @@ class AuthController extends Controller
     public function login()
     {
         $result = [];
-        $login = $this->request['login'];
-        $pass = $this->request['pass'];
+        $login = $this->request->getParams()['login'];
+        $pass = $this->request->getParams()['pass'];
 
         if (!$this->checkLogPwd($login, $pass)) {
             $result['status'] = false;
             $result['text'] = 'Не верный логин или пароль';
         } else {
-            if (isset($this->request['save'])) {
+            if (isset($this->request->getParams()['save'])) {
                 $hash = uniqid(rand(), true);
                 $id = $this->session->getUserId();
 
