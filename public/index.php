@@ -8,7 +8,6 @@ try {
     include realpath("../config/config.php");
 
 //    spl_autoload_register([new Autoload(), 'loadClass']);
-
     $request = new Request();
 
     $controllerClass = CTRL_NAMESPACE . ucfirst($request->getControllerName()) . "Controller";

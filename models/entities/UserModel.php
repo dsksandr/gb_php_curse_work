@@ -11,6 +11,7 @@ class UserModel extends Model
     protected $login;
     protected $password;
     protected $hash;
+    protected $access;
 
     protected $props = [
         'id' => false,
@@ -23,12 +24,14 @@ class UserModel extends Model
         $id = null,
         $login = null,
         $password = null,
-        $hash = null)
+        $hash = null,
+        $access = null
+    )
     {
         $this->id = $id;
         $this->login = $login;
         $this->password = $password;
         $this->hash = $hash;
+        $this->access = $access;
     }
-
 }

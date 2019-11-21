@@ -2,10 +2,13 @@
     <div class="container header__inner ">
         <div class="header__logo"><a href="/">BrandShop</a></div>
         <nav>
-            <ul>
+            <ul class="header__menu">
                 <li><a href="/">Главная</a></li>
                 <li><a href="/catalog/">Каталог</a></li>
                 <li><a href="/cart/" id="cart-menu">🛒<span>{{ cart_count > 0 ? cart_count : '' }}</span></a></li>
+                {% if access == 'admin' or access == 'root' %}
+                    <li><a href="/admin/">Панель администратора</a></li>
+                {% endif %}
             </ul>
         </nav>
 
@@ -22,12 +25,10 @@
                 <input type='text'
                        name='login'
                        placeholder='Логин'
-                       required
                 >
                 <input type='password'
                        name='pass'
                        placeholder='Пароль'
-                       required
                 >
                 Save? <input type='checkbox'
                              name='save'

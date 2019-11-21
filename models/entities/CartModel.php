@@ -10,6 +10,7 @@ class CartModel extends Model
     public $sessionId;
     public $count;
     public $cart;
+    public $order_num;
 
     /**
      * CartModel constructor.

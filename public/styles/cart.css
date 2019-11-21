@@ -1,0 +1,24 @@
+.cart_message {
+    margin-top: 30px;
+}
+
+.cart-product_container {
+    margin-top: 30px;
+}
+
+.cart-form_container {
+    margin-top: 30px;
+}
+
+.cart-total_container {
+    display: inline-block;
+    padding: 20px;
+    margin-top: 30px;
+    border-top: 1px solid black;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.cart-total_container span {
+    margin-left: 6px;
+}

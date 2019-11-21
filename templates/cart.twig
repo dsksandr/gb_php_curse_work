@@ -1,23 +1,25 @@
-<div class="container">
-    <h1>Корзина</h1>
-</div>
-<div class="container">
-    {% if cart|length > 0 %}
-        {% for product in cart %}
-            <div id="product_id-{{ product.product_id }}"
-                 data-count="{{ product.count }}"
-                 data-price="{{ product.price }}"
-            >
-                <img src="/images/products/previews/{{ product.image }}"
-                     alt="$product"
-                     style="width: 300px"
+<main class="cart">
+    <div class="container">
+        <h1>Корзина</h1>
+    </div>
+    <div class="container cart-product_container">
+        {% if cart|length > 0 %}
+            {% for product in cart %}
+                <div id="product_id-{{ product.product_id }}"
+                     class="product"
+                     data-count="{{ product.count }}"
+                     data-price="{{ product.price }}"
                 >
-                <div>
-                    {{ product.name }}
-                </div>
-                <div>
-                    {{ product.price | number_format(0, '', ' ') }} p. *
-                    <span>
+                    <img src="/images/products/previews/{{ product.image }}"
+                         alt="$product"
+                         style="width: 300px"
+                    >
+                    <div>
+                        {{ product.name }}
+                    </div>
+                    <div>
+                        {{ product.price | number_format(0, '', ' ') }} p. *
+                        <span>
 						<button class="product-count-action"
                                 data-id="{{ product.product_id }}"
                                 data-action="del"
@@ -25,10 +27,10 @@
 							-
 						</button>
 					</span>
-                    <span class="prod-count">
+                        <span class="prod-count">
 						{{ product.count }}
 					</span>
-                    <span>
+                        <span>
 						<button class="product-count-action"
                                 data-id="{{ product.product_id }}"
                                 data-action="add"
@@ -36,11 +38,37 @@
 							+
 						</button>
 					</span>
-					<span class="prod-sum">
-						{{ (product.price * product.count) | number_format(0, '', ' ') }} p.
-					</span>
+                        <span class="prod-sum">
+						    <span>{{ (product.price * product.count) | number_format(0, '', ' ') }}</span> p.
+					    </span>
+                    </div>
                 </div>
+            {% endfor %}
+        {% endif %}
+
+    </div>
+    {% if cart|length > 0 %}
+        <div class="container">
+            <div class="cart-total_container">
+                Итого:<span>{{ cart_sum | number_format(0, '', ' ') }}</span> p.
             </div>
-        {% endfor %}
+        </div>
+        <div class="container cart-form_container">
+            <div class="order__wrap">
+                <form method="post"
+                      class="order__form"
+                >
+                    <input type='email'
+                           name='email'
+                           placeholder='E-mail'
+                    >
+                    <input type="submit"
+                           value="Оформить"
+                           id="checkout"
+                    >
+                </form>
+            </div>
+        </div>
     {% endif %}
-</div>
+</main>
+

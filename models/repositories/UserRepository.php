@@ -13,43 +13,37 @@ class UserRepository extends Repository
 
     public function getUser($key, $value)
     {
-        $tableName = $this->getTableName();
-        $sql = "SELECT * FROM `{$tableName}` WHERE `{$key}` = ?";
-        return Db::getInstance()->queryObject($sql, [$value], $this->getEntitiesName());
-    }
+        $sql = <<<SQL
+            select users.id, login, password, hash, access from users
+                inner join access on users.access_id = access.id
+                where $key = ?;
+        SQL;
+        $param = [$value];
 
-    public function updateUserData($id, $hash)
-    {
-        $tableName = $this->getTableName();
-        $sql = "UPDATE `{$tableName}` SET hash = `{$hash}` WHERE users . id = `{$id}`";
-        Db::getInstance()->execute($sql, []);
-        return true;
+        return Db::getInstance()->queryObject($sql, $param, $this->getEntitiesName());
     }
-
 
     public function isAuth(Session $session)
     {
         if (isset($_COOKIE['hash'])) {
             $hash = $_COOKIE['hash'];
             $user_data = $this->getUser('hash', $hash);
-            $user = $user_data['login'];
+            $user = $user_data->login;
             if (!empty($user)) {
-                $session->setUserLogin($user);
+                $session->userLogin = $user;
             }
         }
-        return isset($session->login) ? true : false;
+        $login = $session->userLogin;
+        return isset($login) ? true : false;
     }
 
-    public function checkLogPwd($login, $pass, Session $session)
+    public function checkLogPwd($login, $pass, $user, Session $session)
     {
-        $user_data =  $this->getUser('login', $login);
+        if (password_verify($pass, $user->password)) {
+            $session->userLogin = $login;
+            $session->userId = $user->id;
+            $session->userAccess = $user->access;
 
-        if (password_verify($pass, $user_data->password)) {
-            $session->setUserLogin($login);
-            $session->setUserId($user_data->id);
-
-//            var_dump($user_data);
-//            var_dump($pass);
             return true;
         }
         return false;
@@ -57,7 +51,7 @@ class UserRepository extends Repository
 
     public function getTableName()
     {
-        return "users";
+        return 'users';
     }
 
     public function getEntitiesName()

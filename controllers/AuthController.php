@@ -15,6 +15,7 @@ class AuthController extends Controller
 
     public function formApiAnswer()
     {
+
         $action = $this->request->getActionName();
 
         if (method_exists($this, $action)) {
@@ -34,20 +35,22 @@ class AuthController extends Controller
         $login = $this->request->getParams()['login'];
         $pass = $this->request->getParams()['pass'];
 
-        if (!(new UserRepository())->checkLogPwd($login, $pass, $this->session)) {
+        $user = (new UserRepository())->getUser('login', $login);
+
+        if (!(new UserRepository())->checkLogPwd($login, $pass, $user, $this->session)) {
             $result['status'] = false;
             $result['text'] = 'Не верный логин или пароль';
         } else {
-            if (isset($this->request->getParams()['save'])) {
-                $hash = uniqid(rand(), true);
-                $id = $this->session->getUserId();
+            if ($this->request->getParams()['save']) {
+                $user->hash = uniqid(rand(), true);
 
-                (new UserRepository())->updateUserData($id, $hash);
+                (new UserRepository())->update($user);
 
-                setcookie('hash', $hash, time() + 3600);
+                setcookie('hash', $user->hash, time() + 3600, '/');
             }
             $result['status'] = true;
-            $result['login'] = $login;
+            $result['login'] = $user->login;
+            $result['access'] = $user->access;
         }
 
         return $result;
@@ -57,7 +60,7 @@ class AuthController extends Controller
     {
         session_destroy();
         session_unset();
-        setcookie('hash');
+        setcookie('hash', '', time() + 3600, '/');
 
         $result['status'] = true;
         $result['http_referer'] = $_SERVER['HTTP_REFERER'];

@@ -40,15 +40,17 @@ abstract class Controller implements IController
     protected function init()
     {
         if ($this->request->getType() !== 'api') {
+
             if ((new UserRepository())->isAuth($this->session)) {
                 $this->params['allow'] = true;
-                $this->params['user'] = $this->session->getUserLogin();
+                $this->params['user'] = $this->session->userLogin;
+                $this->params['access'] = $this->session->userAccess;
             } else {
                 $this->params['allow'] = false;
             }
 
             $this->params['cart_count'] = (new CartRepository())->getCartCount();
-
+            $this->params['cart_sum'] = (new CartRepository())->getCartSum();
             $this->createParams();
         } else {
 

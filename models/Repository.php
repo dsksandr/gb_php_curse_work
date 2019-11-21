@@ -23,10 +23,9 @@ abstract class Repository implements IModels
         $params = [];
         $columns = [];
 
-        foreach ($entity as $key => $value) {
-            if ($key == "id") continue;
-            $params[":{$key}"] = $value;
-            $columns[] = "`$key`";
+        foreach ($entity->props as $key => $value) {
+            $params[":{$key}"] = "{$entity->$key}";
+            $columns[] = $key;
         }
 
         $columns = implode(', ', $columns);
@@ -34,11 +33,13 @@ abstract class Repository implements IModels
 
         $tableName = $this->getTableName();
 
-        $sql = "INSERT INTO '{$tableName}' ('{$columns}') VALUES ('{$values}')";
+        $sql = "insert into $tableName ( $columns ) values ( $values )";
 
-        Db::getInstance()->execute($sql, $params);
+        $result = Db::getInstance()->execute($sql, $params);
 
         $entity->id = Db::getInstance()->lastInsertId();
+
+        return $result;
     }
 
     public function delete(Model $entity)
@@ -55,16 +56,18 @@ abstract class Repository implements IModels
 
         foreach ($entity->props as $key => $value) {
             if (!$entity->props[$key]) continue;
-            $params[":{$key}"] = $this->$key;
+            $params[":{$key}"] = $entity->{$key};
             $columns[] .= "`" . $key . "` = :" . $key;
-            $this->$entity[$key] = false;
+            $entity->props[$key] = false;
         }
 
         $columns = implode(", ", $columns);
         $tableName = $this->getTableName();
+        $params[':id'] = $entity->id;
 
-        $sql = "UPDATE `{$tableName}` SET `{$columns}` WHERE `id` = ?";
-        Db::getInstance()->execute($sql, [$entity->id]);
+        $sql = "update $tableName set $columns where `id` = :id";
+
+        Db::getInstance()->execute($sql, $params);
     }
 
     public function save(Model $entity)
