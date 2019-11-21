@@ -1,3 +1,5 @@
+'use strict';
+
 $(() => {
     $("#login").on({
         click: function (e) {
@@ -5,7 +7,7 @@ $(() => {
 
             const login = $("[name='login']").val(),
                 pass = $("[name='pass']").val(),
-                save = $("[name='save']").val() || null;
+                save = $("[name='save']").prop("checked");
 
             if (login === '' || pass === '') {
                 alert('Введите логин и пароль!');
@@ -15,19 +17,26 @@ $(() => {
             const request = $.ajax("/api/auth/?action=login", {
                 type: "POST",
                 dataType: "json",
-                data: {
+                data: JSON.stringify({
                     login: login,
                     pass: pass,
                     save: save,
-                },
+                }),
                 success: data => {
                     if (data['status']) {
                         console.log(data);
                         $('.auth__form').hide();
                         $('.auth__greeting .login').text(data['login']);
                         $('.auth__greeting').show();
+
+
+                        if (data['access'] === 'admin' || data['access'] === 'root') {
+                            const admin = '<li><a href="/admin/">Панель администратора</a></li>';
+                            $('.header__menu').append(admin);
+                        }
                     } else {
                         console.log(data);
+
                     }
                 },
             });

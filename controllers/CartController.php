@@ -4,18 +4,15 @@
 namespace app\controllers;
 
 
-use app\core\TwigRender;
-use app\models\CartModel;
+use app\models\repositories\CartRepository;
 
 class CartController extends Controller
 {
     public function createParams()
     {
-        $cart = New CartModel();
-
         $this->params['page'] = 'cart';
-        $this->params['cart'] = $cart->cart;
-        $this->params['cart_count'] = $cart->count;
+        $this->params['cart'] = (new CartRepository())->getProductsFromCart();
+        $this->params['cart_count'] = (new CartRepository())->getCartCount();
 
         echo $this->renderer->render($this->params);
     }
@@ -27,7 +24,7 @@ class CartController extends Controller
         if (method_exists($this, $action)) {
             $result['status'] = $this->$action($this->request->getParams()['id']);
             if ($result['status']) {
-                $result['count'] = CartModel::getCartCount();
+                $result['count'] = (new CartRepository())->getCartCount();
             } else {
                 $result['message'] = 'В ходе выполнеия операции возникла ошибка';
             }
@@ -42,11 +39,11 @@ class CartController extends Controller
 
     public function add($id)
     {
-        return CartModel::changeProductCount($id, 1);
+        return (new CartRepository())->changeProductCount($id, 1);
     }
 
     public function del($id)
     {
-        return CartModel::changeProductCount($id, -1);
+        return (new CartRepository())->changeProductCount($id, -1);
     }
 }

@@ -8,6 +8,7 @@ class Session
     protected $sessionId;
     protected $userLogin;
     protected $userId;
+    protected $userAccess;
 
     /**
      * Session constructor.
@@ -15,47 +16,21 @@ class Session
     public function __construct()
     {
         $this->sessionId = session_id();
-        $this->userLogin = isset($_SESSION['login']) ? $_SESSION['login'] : null;
-        $this->userId = isset($_SESSION['id']) ? $_SESSION['id'] : null;
+        $this->userLogin = isset($_SESSION['userLogin']) ? $_SESSION['userLogin'] : null;
+        $this->userId = isset($_SESSION['userId']) ? $_SESSION['userId'] : null;
+        $this->userAccess = isset($_SESSION['userAccess']) ? $_SESSION['userAccess'] : null;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSessionId()
+    public function __get($name)
     {
-        return $this->sessionId;
+        return $this->$name;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getUserLogin()
+    public function __set($name, $value)
     {
-        return $this->userLogin;
-    }
-
-    /**
-     * @param string $value
-     */
-    public function setUserLogin($value)
-    {
-        $this->userLogin = $value;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUserId()
-    {
-        return $this->sessionId;
-    }
-
-    /**
-     * @param string $value
-     */
-    public function setUserId($value)
-    {
-        $this->userId = $value;
+        if (property_exists($this, $name)) {
+            $_SESSION[$name] = $value;
+            $this->$name = $value;
+        }
     }
 }
