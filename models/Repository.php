@@ -3,28 +3,32 @@
 namespace app\models;
 
 
-use app\core\Db;
+use app\core\App;
 use app\interfaces\IModels;
 
-abstract class Repository implements IModels
+abstract
+class Repository implements IModels
 {
-    public function getLimit($from, $to)
+    public
+    function getLimit($from, $to)
     {
-
+//        todo:
     }
 
-    public function getWhere($name, $value)
+    public
+    function getWhere($name, $value)
     {
-
+//        todo:
     }
 
-    public function insert(Model $entity)
+    public
+    function insert(Model $entity)
     {
         $params = [];
         $columns = [];
 
         foreach ($entity->props as $key => $value) {
-            $params[":{$key}"] = "{$entity->$key}";
+            $params[":{$key}"] = $entity->$key;
             $columns[] = $key;
         }
 
@@ -33,23 +37,31 @@ abstract class Repository implements IModels
 
         $tableName = $this->getTableName();
 
-        $sql = "insert into $tableName ( $columns ) values ( $values )";
+        $sql = <<<SQL
+            insert into $tableName ( $columns ) values ( $values )
+        SQL;
 
-        $result = Db::getInstance()->execute($sql, $params);
+        $result = App::call()->db->execute($sql, $params);
 
-        $entity->id = Db::getInstance()->lastInsertId();
+        $entity->id = App::call()->db->lastInsertId();
 
         return $result;
     }
 
-    public function delete(Model $entity)
+    public
+    function delete(Model $entity)
     {
         $tableName = $this->getTableName();
-        $sql = "DELETE FROM `{$tableName}` WHERE `id` = ?";
-        return Db::getInstance()->execute($sql, [$entity->id]);
+        $sql = <<<SQL
+            delete from $tableName where id = ?;
+        SQL;
+        $params = [$entity->id];
+
+        return App::call()->db->execute($sql, $params);
     }
 
-    public function update(Model $entity)
+    public
+    function update(Model $entity)
     {
         $params = [];
         $columns = [];
@@ -63,14 +75,17 @@ abstract class Repository implements IModels
 
         $columns = implode(", ", $columns);
         $tableName = $this->getTableName();
-        $params[':id'] = $entity->id;
+        $params[':id'] = (int) $entity->id;
 
-        $sql = "update $tableName set $columns where `id` = :id";
+        $sql = <<<SQL
+            update $tableName set $columns where id = :id;
+        SQL;
 
-        Db::getInstance()->execute($sql, $params);
+        return App::call()->db->execute($sql, $params);
     }
 
-    public function save(Model $entity)
+    public
+    function save(Model $entity)
     {
         if (is_null($entity->id))
             $this->insert($entity);
@@ -78,17 +93,30 @@ abstract class Repository implements IModels
             $this->update($entity);
     }
 
-    public function getOne($id)
+    public
+    function getOne($id)
     {
         $tableName = $this->getTableName();
-        $sql = "SELECT * FROM `{$tableName}` WHERE `id` = :id";
-        return Db::getInstance()->queryObject($sql, ['id' => $id], $this->getEntitiesName());
+        $sql = <<<SQL
+            select * from $tableName where id = ?
+        SQL;
+        $params = [$id];
+
+        return App::call()->db->queryObject(
+                $sql,
+                $params,
+                $this->getEntitiesName()
+            );
     }
 
-    public function getAll()
+    public
+    function getAll()
     {
         $tableName = $this->getTableName();
-        $sql = "SELECT * FROM `{$tableName}`";
-        return Db::getInstance()->queryAll($sql);
+        $sql = <<<SQL
+            select * from $tableName
+        SQL;
+
+        return App::call()->db->queryAll($sql);
     }
 }

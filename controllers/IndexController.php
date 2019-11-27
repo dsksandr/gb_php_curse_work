@@ -6,7 +6,8 @@ namespace app\controllers;
 
 class IndexController extends Controller
 {
-    public function createParams()
+    public
+    function createParams()
     {
         $this->params['page'] = 'index';
 

@@ -9,12 +9,14 @@ use app\models\Repository;
 
 class ProductRepository extends Repository
 {
-    public function getTableName()
+    public
+    function getTableName()
     {
         return "products";
     }
 
-    public function getEntitiesName()
+    public
+    function getEntitiesName()
     {
         return ProductModel::class;
     }

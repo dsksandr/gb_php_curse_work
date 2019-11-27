@@ -3,23 +3,27 @@
 namespace app\models;
 
 
-abstract class Model
+abstract
+class Model
 {
 
-    public function __set($name, $value)
+    public
+    function __set($name, $value)
     {
         //TODO можно сделать проверку, а существует ли такое поле
+        if (isset($this->props[$name])) $this->props[$name] = true;
 
-        $this->props[$name] = true;
         $this->$name = $value;
     }
 
-    public function __get($name)
+    public
+    function __get($name)
     {
         return $this->$name;
     }
 
-    public function __isset($name)
+    public
+    function __isset($name)
     {
         return $name;
     }

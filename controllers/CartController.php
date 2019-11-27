@@ -4,27 +4,34 @@
 namespace app\controllers;
 
 
-use app\models\repositories\CartRepository;
+use app\core\App;
 
 class CartController extends Controller
 {
-    public function createParams()
+    public
+    function createParams()
     {
         $this->params['page'] = 'cart';
-        $this->params['cart'] = (new CartRepository())->getProductsFromCart();
-        $this->params['cart_count'] = (new CartRepository())->getCartCount();
+        $this->params['cart_products'] = App::call()->cartRepository->getProductsFromCart();
+        $this->params['cart_count'] = App::call()->cartRepository->getCartCount();
 
         echo $this->renderer->render($this->params);
     }
 
-    public function formApiAnswer()
+    public
+    function formApiAnswer()
     {
-        $action = $this->request->getActionName();
+        $action = App::call()->request->getActionName();
 
         if (method_exists($this, $action)) {
-            $result['status'] = $this->$action($this->request->getParams()['id']);
+
+            $id = App::call()->request->getParams()['id'];
+
+            $result['status'] = $this->$action($id);
+
             if ($result['status']) {
-                $result['count'] = (new CartRepository())->getCartCount();
+                $result['count'] = App::call()->cartRepository->getCartCount();
+
             } else {
                 $result['message'] = 'В ходе выполнеия операции возникла ошибка';
             }
@@ -37,13 +44,15 @@ class CartController extends Controller
         die();
     }
 
-    public function add($id)
+    public
+    function add($id)
     {
-        return (new CartRepository())->changeProductCount($id, 1);
+        return App::call()->cartRepository->changeProductCount($id, 1);
     }
 
-    public function del($id)
+    public
+    function del($id)
     {
-        return (new CartRepository())->changeProductCount($id, -1);
+        return App::call()->cartRepository->changeProductCount($id, -1);
     }
 }

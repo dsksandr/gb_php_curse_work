@@ -14,16 +14,26 @@ class OrderModel extends Model
     protected $status;
 
     protected $props = [
-        'session_id' => false,
-        'email' => false,
+        'status' => false,
     ];
 
-    public function __construct(
+    public
+    function __construct(
+        $id = null,
         $session_id = null,
-        $email = null
+        $email = null,
+        $status = null
     )
     {
+        $this->id = $id;
         $this->session_id = $session_id;
         $this->email = $email;
+        $this->status = $status;
+    }
+
+    public
+    function getID()
+    {
+        return $this->id;
     }
 }

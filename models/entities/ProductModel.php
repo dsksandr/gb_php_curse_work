@@ -27,12 +27,16 @@ class ProductModel extends Model
      * @param $price
      * @param $image
      */
-    public function __construct($name = null, $description = null, $price = null, $image = null)
+    public function __construct(
+        $name = null,
+        $description = null,
+        $price = null,
+        $image = null
+    )
     {
         $this->name = $name;
         $this->description = $description;
         $this->price = $price;
         $this->image = $image;
     }
-
 }

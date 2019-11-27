@@ -4,26 +4,30 @@
 namespace app\models\repositories;
 
 
-use app\core\Db;
+use app\core\App;
 use app\models\entities\OrderModel;
 use app\models\Repository;
 
 class OrderRepository extends Repository
 {
-    public function getOrderStatus()
+    public
+    function getOrderStatus()
     {
-        $sql = "
-            SELECT * FROM order_status 
-        ";
-        return Db::getInstance()->queryAll($sql, []);
+        $sql = <<<SQL
+            select * from order_status 
+        SQL;
+
+        return App::call()->db->queryAll($sql, []);
     }
 
-    public function getTableName()
+    public
+    function getTableName()
     {
         return "orders";
     }
 
-    public function getEntitiesName()
+    public
+    function getEntitiesName()
     {
         return OrderModel::class;
     }

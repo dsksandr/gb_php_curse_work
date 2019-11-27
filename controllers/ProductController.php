@@ -3,14 +3,18 @@
 namespace app\controllers;
 
 
-use app\models\repositories\ProductRepository;
+use app\core\App;
 
 class ProductController extends Controller
 {
-    public function createParams()
+    public
+    function createParams()
     {
+
         $this->params['page'] = 'product';
-        $this->params['product'] = (new ProductRepository())->getOne($this->request->getParams()['id']);
+
+        $id = App::call()->request->getParams()['id'];
+        $this->params['product'] = App::call()->productRepository->getOne($id);
 
         echo $this->renderer->render($this->params);
     }

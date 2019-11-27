@@ -4,72 +4,87 @@
 namespace app\models\repositories;
 
 
-use app\core\Db;
+use app\core\App;
 use app\models\entities\CartModel;
 use app\models\Repository;
 
 class CartRepository extends Repository
 {
-    public function changeProductCount($id, $quantity)
+    public
+    function changeProductCount($id, $quantity)
     {
-        $session_id = session_id();
-        $tableName = $this->getTableName();
-        $sql = "
-            INSERT INTO cart (`product_id`, `session_id`) VALUES (?, ?)
-                ON DUPLICATE KEY UPDATE `count` = `count` + ?;
-        ";
+        $sql = <<<SQL
+            insert into cart (`product_id`, `session_id`) values (?, ?)
+                on duplicate key update `count` = `count` + ?;
+        SQL;
+        $params = [
+            $id,
+            App::call()->session->getSessionID(),
+            $quantity
+        ];
 
-        return Db::getInstance()->execute($sql, [$id, $session_id, $quantity]);
+        return App::call()->db->execute($sql, $params);
     }
-    public function getCartSum() {
+
+    public
+    function getCartSum()
+    {
         $sql = <<<SQL
             select sum(price * cart.count) as total from products
                 inner join cart on products.id = cart.product_id
                 where cart.session_id = ? and cart.order_id is null and count != 0;
         SQL;
-        $params = [session_id()];
-        return Db::getInstance()->queryOne($sql, $params)['total'];
+        $params = [App::call()->session->getSessionID()];
+
+        return App::call()->db->queryOne($sql, $params)['total'];
     }
 
-    public function getCartCount()
+    public
+    function getCartCount()
     {
-        $session_id = session_id();
-        $sql = "
-            SELECT SUM(`count`) as count FROM cart
-                WHERE `session_id` = ? and order_id is null;
-        ";
-        return Db::getInstance()->queryOne($sql, [$session_id])['count'];
+        $sql = <<<SQL
+            select sum(`count`) as count from cart
+                where `session_id` = ? and order_id is null;
+        SQL;
+        $params = [App::call()->session->getSessionID()];
+
+        return App::call()->db->queryOne($sql, $params)['count'];
     }
 
-    public function getProductsFromCart()
+    public
+    function getProductsFromCart()
     {
-        $session_id = session_id();
-        $sql = "
-            SELECT `cart`.`id`, `count`, `name`, `price`, `product_id`, `image` FROM `products` 
-                INNER JOIN `cart` ON `products`.`id` = `cart`.`product_id` 
-                WHERE `cart`.`session_id` = ? AND `order_id` IS NULL AND `count` != 0;
-        ";
-        return Db::getInstance()->queryAll($sql, [$session_id]);
+        $sql = <<<SQL
+            select `cart`.`id`, `count`, `name`, `price`, `product_id`, `image` from `products` 
+                inner join `cart` on `products`.`id` = `cart`.`product_id` 
+                where `cart`.`session_id` = ? and `order_id` is null and `count` != 0;
+        SQL;
+        $params = [App::call()->session->getSessionID()];
+
+        return App::call()->db->queryAll($sql, $params);
     }
 
-    public function addOrderNumber($sessionId, $orderNumber)
+    public
+    function addOrderNumber($orderNumber)
     {
         $sql = <<<SQL
             update cart
                 set order_id = ?
                 where session_id = ? and order_id IS NULL and count != 0;
         SQL;
-        $params = [$orderNumber, $sessionId];
+        $params = [$orderNumber, App::call()->session->getSessionID()];
 
-        Db::getInstance()->execute($sql, $params);
+        App::call()->db->execute($sql, $params);
     }
 
-    public function getTableName()
+    public
+    function getTableName()
     {
         return "cart";
     }
 
-    public function getEntitiesName()
+    public
+    function getEntitiesName()
     {
         return CartModel::class;
     }

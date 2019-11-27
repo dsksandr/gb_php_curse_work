@@ -4,17 +4,25 @@
 namespace app\controllers;
 
 
-use app\models\repositories\OrderRepository;
-use app\models\repositories\ProductRepository;
+use app\core\App;
 
 class AdminController extends Controller
 {
+    public
     function createParams()
     {
-        $this->params['page'] = 'admin';
-        $this->params['orders'] = (new OrderRepository())->getAll();
-        $this->params['statuses'] = (new OrderRepository())->getOrderStatus();
+        if (App::call()->session->getUserAccess() === 'admin') {
 
-        echo $this->renderer->render($this->params);
+            $this->params['page'] = 'admin';
+            $this->params['orders'] = App::call()->orderRepository->getAll();
+            $this->params['statuses'] = App::call()->orderRepository->getOrderStatus();
+
+            echo $this->renderer->render($this->params);
+
+        } else {
+
+            header('Location: /');
+
+        }
     }
 }

@@ -4,19 +4,21 @@
 namespace app\controllers;
 
 
-use app\models\repositories\UserRepository;
+use app\core\App;
 
 class AuthController extends Controller
 {
-    public function createParams()
+    public
+    function createParams()
     {
         return true;
     }
 
-    public function formApiAnswer()
+    public
+    function formApiAnswer()
     {
 
-        $action = $this->request->getActionName();
+        $action = App::call()->request->getActionName();
 
         if (method_exists($this, $action)) {
             $result = $this->$action();
@@ -29,25 +31,36 @@ class AuthController extends Controller
         die();
     }
 
-    public function login()
+    public
+    function login()
     {
         $result = [];
-        $login = $this->request->getParams()['login'];
-        $pass = $this->request->getParams()['pass'];
+        $login = App::call()->request->getParams()['login'];
+        $pass = App::call()->request->getParams()['pass'];
 
-        $user = (new UserRepository())->getUser('login', $login);
+        $user = App::call()->userRepository->getUser('login', $login);
 
-        if (!(new UserRepository())->checkLogPwd($login, $pass, $user, $this->session)) {
+        if (!App::call()->userRepository->checkLogPwd($pass, $user)) {
+
             $result['status'] = false;
             $result['text'] = 'Не верный логин или пароль';
+
         } else {
-            if ($this->request->getParams()['save']) {
+
+            App::call()->session->setUserLogin($user->login);
+            App::call()->session->setUserID($user->id);
+            App::call()->session->setUserAccess($user->access);
+
+
+            if (App::call()->request->getParams()['save']) {
+
                 $user->hash = uniqid(rand(), true);
 
-                (new UserRepository())->update($user);
+                App::call()->userRepository->update($user);
 
                 setcookie('hash', $user->hash, time() + 3600, '/');
             }
+
             $result['status'] = true;
             $result['login'] = $user->login;
             $result['access'] = $user->access;
@@ -56,7 +69,8 @@ class AuthController extends Controller
         return $result;
     }
 
-    public function logout()
+    public
+    function logout()
     {
         session_destroy();
         session_unset();

@@ -13,24 +13,65 @@ class Session
     /**
      * Session constructor.
      */
-    public function __construct()
+    public
+    function __construct()
     {
+        session_start();
+
         $this->sessionId = session_id();
         $this->userLogin = isset($_SESSION['userLogin']) ? $_SESSION['userLogin'] : null;
         $this->userId = isset($_SESSION['userId']) ? $_SESSION['userId'] : null;
         $this->userAccess = isset($_SESSION['userAccess']) ? $_SESSION['userAccess'] : null;
     }
 
-    public function __get($name)
+    public
+    function getSessionID()
     {
-        return $this->$name;
+        return $this->sessionId;
     }
 
-    public function __set($name, $value)
+    public
+    function regenerateSessionID()
     {
-        if (property_exists($this, $name)) {
-            $_SESSION[$name] = $value;
-            $this->$name = $value;
-        }
+        session_regenerate_id();
+    }
+
+    public
+    function getUserLogin()
+    {
+        return $this->userLogin;
+    }
+
+    public
+    function setUserLogin($value)
+    {
+        $_SESSION['userLogin'] = $value;
+        $this->userLogin = $value;
+    }
+
+    public
+    function getUserID()
+    {
+        return $this->userId;
+    }
+
+    public
+    function setUserID($value)
+    {
+        $_SESSION['userId'] = $value;
+        $this->userId = $value;
+    }
+
+    public
+    function getUserAccess()
+    {
+        return $this->userAccess;
+    }
+
+    public
+    function setUserAccess($value)
+    {
+        $_SESSION['userAccess'] = $value;
+        $this->userAccess = $value;
     }
 }
