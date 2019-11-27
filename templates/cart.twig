@@ -3,8 +3,8 @@
         <h1>Корзина</h1>
     </div>
     <div class="container cart-product_container">
-        {% if cart|length > 0 %}
-            {% for product in cart %}
+        {% if cart_products|length > 0 %}
+            {% for product in cart_products %}
                 <div id="product_id-{{ product.product_id }}"
                      class="product"
                      data-count="{{ product.count }}"
@@ -47,7 +47,7 @@
         {% endif %}
 
     </div>
-    {% if cart|length > 0 %}
+    {% if cart_products|length > 0 %}
         <div class="container">
             <div class="cart-total_container">
                 Итого:<span>{{ cart_sum | number_format(0, '', ' ') }}</span> p.

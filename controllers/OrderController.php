@@ -4,21 +4,21 @@
 namespace app\controllers;
 
 
-use app\models\entities\CartModel;
+use app\core\App;
 use app\models\entities\OrderModel;
-use app\models\repositories\CartRepository;
-use app\models\repositories\OrderRepository;
 
 class OrderController extends Controller
 {
-    public function createParams()
+    public
+    function createParams()
     {
         return true;
     }
 
-    public function formApiAnswer()
+    public
+    function formApiAnswer()
     {
-        $action = $this->request->getActionName();
+        $action = App::call()->request->getActionName();
 
         if (method_exists($this, $action)) {
             $result = $this->$action();
@@ -31,22 +31,45 @@ class OrderController extends Controller
         die();
     }
 
-    public function checkout()
+    public
+    function checkout()
     {
         $order = new OrderModel(
-            $this->session->sessionId,
-            $this->request->getParams()['email']
+            null,
+            App::call()->session->getSessionID(),
+            App::call()->request->getParams()['email']
         );
-        $result['status'] = (new OrderRepository())->insert($order);
+        $result['status'] = App::call()->orderRepository->insert($order);
 
         if ($result['status']) {
-            $result['order_num'] = (int) $order->id;
 
-            $cart = new CartModel();
-            $cart->order_num = $result['order_num'];
-            (new CartRepository())->addOrderNumber($this->session->sessionId, $result['order_num']);
-            session_regenerate_id();
+            $result['order_num'] = (int)$order->getID();
+
+            App::call()->cartRepository->addOrderNumber($order->getID());
+            App::call()->session->regenerateSessionID();
+
         } else {
+
+            $result['message'] = 'Во время выполнения операции произошла ошибка!';
+
+        }
+
+        return $result;
+    }
+
+    public
+    function change_status()
+    {
+        $order = new OrderModel(
+            App::call()->request->getParams()['id'],
+        );
+
+        $order->status = (int) App::call()->request->getParams()['status'];
+
+        $result['status'] = App::call()->orderRepository->update($order);
+
+        if (!$result['status']) {
+
             $result['message'] = 'Во время выполнения операции произошла ошибка!';
         }
 

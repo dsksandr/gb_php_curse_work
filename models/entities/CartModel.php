@@ -7,18 +7,23 @@ use app\models\Model;
 
 class CartModel extends Model
 {
-    public $sessionId;
-    public $count;
-    public $cart;
-    public $order_num;
+    protected $sessionId;
+    protected $count;
+    protected $cart;
+    protected $order_num;
+
+    protected $props = [
+        'session_id' => false,
+        'count' => false,
+        'cart' => false,
+        'order_num' => false,
+    ];
 
     /**
      * CartModel constructor.
      */
-    public function __construct()
+    public
+    function __construct()
     {
-
     }
-
-
 }

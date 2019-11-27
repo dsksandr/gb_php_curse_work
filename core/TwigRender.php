@@ -6,6 +6,7 @@ namespace app\core;
 
 use app\interfaces\IRender;
 use Twig\Environment;
+use Twig\Error\{LoaderError, RuntimeError, SyntaxError};
 use Twig\Loader\FilesystemLoader;
 
 class TwigRender implements IRender
@@ -16,9 +17,10 @@ class TwigRender implements IRender
 
     public function __construct()
     {
+        $dir_tpl = App::call()->config['dir_tpl'];
         $paths =  array_merge(
-            [TPL_DIR],
-            glob(TPL_DIR . DS . '*' , GLOB_ONLYDIR)
+            [$dir_tpl],
+            glob($dir_tpl . DIRECTORY_SEPARATOR . '*' , GLOB_ONLYDIR)
         );
         $this->loader = new FilesystemLoader($paths);
         $this->twig = new Environment($this->loader, []);
@@ -27,6 +29,9 @@ class TwigRender implements IRender
     /**
      * @param $params
      * @return mixed
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function render($params)
     {

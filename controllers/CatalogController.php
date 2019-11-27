@@ -4,14 +4,15 @@
 namespace app\controllers;
 
 
-use app\models\repositories\ProductRepository;
+use app\core\App;
 
 class CatalogController extends Controller
 {
+    public
     function createParams()
     {
         $this->params['page'] = 'catalog';
-        $this->params['catalog'] = (new ProductRepository())->getAll();
+        $this->params['catalog'] = App::call()->productRepository->getAll();
 
         echo $this->renderer->render($this->params);
     }

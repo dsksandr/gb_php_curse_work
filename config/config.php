@@ -1,11 +1,44 @@
 <?php
 
-define('DS', DIRECTORY_SEPARATOR);
-define('ROOT_DIR', dirname(__DIR__));
-define('CORE_DIR', dirname(__DIR__) . DS . 'core');
-define('TPL_DIR', dirname(__DIR__) . DS . 'templates');
+use app\core\Db;
+use app\core\{Request, Session};
+use app\models\repositories\CartRepository;
+use app\models\repositories\ProductRepository;
+use app\models\repositories\UserRepository;
+use app\models\repositories\OrderRepository;
 
-define('CTRL_NAMESPACE', 'app\\controllers\\');
-
-require_once realpath('../vendor/autoload.php');
-require_once realpath(CORE_DIR . DS .'Autoload.php');
+return [
+    'dir_root' => $_SERVER['DOCUMENT_ROOT'],
+    'dir_tpl' => dirname(__DIR__) . DIRECTORY_SEPARATOR . 'templates',
+    'ctrl_namespaces' => 'app\controllers\\',
+    'components' => [
+        'db' => [
+            'class' => Db::class,
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'login' => 'root',
+            'password' => '',
+            'database' => 'shop',
+            'charset' => 'utf8'
+        ],
+        'request' => [
+            'class' => Request::class
+        ],
+        'session' => [
+            'class' => Session::class
+        ],
+        //TODO По хорошему сделать для репозиториев отедьное простое хранилищебез reflection
+        'cartRepository' => [
+            'class' => CartRepository::class
+        ],
+        'productRepository' => [
+            'class' => ProductRepository::class
+        ],
+        'userRepository' => [
+            'class' => UserRepository::class
+        ],
+        'orderRepository' => [
+            'class' => OrderRepository::class
+        ],
+    ]
+];

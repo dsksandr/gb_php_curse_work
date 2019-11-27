@@ -3,8 +3,7 @@
 
 namespace app\models\repositories;
 
-use app\core\Db;
-use app\core\Session;
+use app\core\App;
 use app\models\entities\UserModel;
 use app\models\Repository;
 
@@ -20,33 +19,31 @@ class UserRepository extends Repository
         SQL;
         $param = [$value];
 
-        return Db::getInstance()->queryObject($sql, $param, $this->getEntitiesName());
+        return App::call()->db->queryObject(
+                $sql,
+                $param,
+                $this->getEntitiesName()
+            );
     }
 
-    public function isAuth(Session $session)
+    public function isAuth()
     {
         if (isset($_COOKIE['hash'])) {
             $hash = $_COOKIE['hash'];
             $user_data = $this->getUser('hash', $hash);
             $user = $user_data->login;
             if (!empty($user)) {
-                $session->userLogin = $user;
+                App::call()->session->setUserLogin($user);
             }
         }
-        $login = $session->userLogin;
+        $login = App::call()->session->getUserLogin();
+
         return isset($login) ? true : false;
     }
 
-    public function checkLogPwd($login, $pass, $user, Session $session)
+    public function checkLogPwd($pass, $user)
     {
-        if (password_verify($pass, $user->password)) {
-            $session->userLogin = $login;
-            $session->userId = $user->id;
-            $session->userAccess = $user->access;
-
-            return true;
-        }
-        return false;
+        return password_verify($pass, $user->password);
     }
 
     public function getTableName()
